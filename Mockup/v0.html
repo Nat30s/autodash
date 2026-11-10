@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Sales Analytics & Management Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Theme CSS Variables */
+    :root {
+      --bg-main: #0f172a;
+      --bg-header: rgba(15, 23, 42, 0.9);
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-card-hover: rgba(51, 65, 85, 0.5);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-heading: #ffffff;
+      --input-bg: #1e293b;
+      --table-row-alt: rgba(15, 23, 42, 0.3);
+    }
+
+    html.light {
+      --bg-main: #f8fafc;
+      --bg-header: rgba(255, 255, 255, 0.9);
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: #f1f5f9;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --text-heading: #0f172a;
+      --input-bg: #ffffff;
+      --table-row-alt: rgba(241, 245, 249, 0.6);
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-glass {
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-30 header-glass backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand & Title -->
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-brand-600 rounded-xl shadow-lg shadow-brand-500/30 text-white">
+            <i class="fa-solid fa-car-side text-xl"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg text-heading leading-tight">AutoPulse Analytics</h1>
+            <p class="text-xs text-muted">Car Sales Performance Portal</p>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2.5 rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 text-slate-300 dark:text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-200 transition-colors" title="Toggle Light/Dark Theme">
+            <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+          </button>
+
+          <!-- Vehicle Deep Dive Button -->
+          <button onclick="openVehicleAnalyticsModal()" class="flex items-center space-x-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold px-3.5 py-2.5 rounded-lg shadow-md transition-all">
+            <i class="fa-solid fa-chart-area text-xs"></i>
+            <span class="hidden md:inline">Vehicle Analytics</span>
+          </button>
+
+          <!-- Month Selector -->
+          <div class="relative">
+            <select id="monthSelector" onchange="renderDashboard()" class="bg-slate-800 dark:bg-slate-800 light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-300 text-heading text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full p-2.5 pr-8 appearance-none cursor-pointer font-medium transition-colors">
+              <!-- Populated by JS -->
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+              <i class="fa-solid fa-chevron-down text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Bulk Upload Button -->
+          <button onclick="openBulkModal()" class="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold px-3.5 py-2.5 rounded-lg shadow-md transition-all">
+            <i class="fa-solid fa-file-csv text-xs"></i>
+            <span class="hidden md:inline">Bulk Import</span>
+          </button>
+
+          <!-- Add Single Record Button -->
+          <button onclick="openModal()" class="flex items-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold px-3.5 py-2.5 rounded-lg shadow-md transition-all">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span class="hidden sm:inline">Add Record</span>
+          </button>
+
+          <!-- Export JSON -->
+          <button onclick="exportJSON()" class="p-2.5 rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 text-slate-300 dark:text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-200 transition-colors" title="Export Dataset (JSON)">
+            <i class="fa-solid fa-download text-sm"></i>
+          </button>
+
+          <!-- Reset Dataset -->
+          <button onclick="confirmResetData()" class="p-2.5 rounded-lg border border-rose-900/50 text-rose-400 hover:bg-rose-500/10 transition-colors" title="Reset Default Data">
+            <i class="fa-solid fa-rotate-left text-sm"></i>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Total Industry Volume -->
+      <div class="glass-card p-5 rounded-xl flex flex-col justify-between relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-muted uppercase tracking-wider">Total Industry Sales</span>
+          <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg">
+            <i class="fa-solid fa-chart-line text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight" id="kpiTotalVolume">0</div>
+          <div class="flex items-center space-x-2 mt-1">
+            <span id="kpiTotalVolumeYoY" class="inline-flex items-center text-xs font-bold px-2 py-0.5 rounded">0%</span>
+            <span class="text-xs text-muted">vs prev. year</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Manufacturer -->
+      <div class="glass-card p-5 rounded-xl flex flex-col justify-between relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-muted uppercase tracking-wider">Top Manufacturer</span>
+          <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
+            <i class="fa-solid fa-crown text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="text-xl sm:text-2xl font-bold text-heading truncate" id="kpiTopMfg">--</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="text-xs text-muted" id="kpiTopMfgVolume">0 units</span>
+            <span class="text-xs font-semibold text-amber-400" id="kpiTopMfgShare">0% Share</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top YoY Growth Model -->
+      <div class="glass-card p-5 rounded-xl flex flex-col justify-between relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-muted uppercase tracking-wider">Top Growth Model (YoY)</span>
+          <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+            <i class="fa-solid fa-bolt text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="text-xl sm:text-2xl font-bold text-heading truncate" id="kpiTopGrowthModel">--</div>
+          <div class="flex items-center space-x-2 mt-1">
+            <span id="kpiTopGrowthRate" class="inline-flex items-center text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">0%</span>
+            <span class="text-xs text-muted truncate" id="kpiTopGrowthMfg">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Industry MoM Change -->
+      <div class="glass-card p-5 rounded-xl flex flex-col justify-between relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-muted uppercase tracking-wider">Industry MoM Change</span>
+          <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg">
+            <i class="fa-solid fa-calendar-days text-sm"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight" id="kpiMoMVolume">0</div>
+          <div class="flex items-center space-x-2 mt-1">
+            <span id="kpiMoMChange" class="inline-flex items-center text-xs font-bold px-2 py-0.5 rounded">0%</span>
+            <span class="text-xs text-muted">vs prev. month</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Filter Bar & Table Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 glass-card p-4 rounded-xl">
+      <!-- Search Input -->
+      <div class="relative w-full sm:w-80">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass text-sm"></i>
+        </div>
+        <input type="text" id="searchInput" oninput="renderDashboard()" placeholder="Search Manufacturer or Model..." class="bg-slate-900 dark:bg-slate-900 light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-300 text-heading text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full pl-9 p-2.5 placeholder-slate-500 transition-colors">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleCollapseAll(true)" class="text-xs font-medium text-muted hover:text-heading px-3 py-2 rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 hover:bg-slate-800 light:hover:bg-slate-200 transition-colors">
+            Collapse All
+          </button>
+          <button onclick="toggleCollapseAll(false)" class="text-xs font-medium text-muted hover:text-heading px-3 py-2 rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 hover:bg-slate-800 light:hover:bg-slate-200 transition-colors">
+            Expand All
+          </button>
+        </div>
+        <span class="text-xs text-muted border-l border-slate-700 dark:border-slate-700 light:border-slate-300 pl-3" id="recordCountText">Showing 0 models</span>
+      </div>
+    </div>
+
+    <!-- Main Data Table Container -->
+    <div class="glass-card rounded-xl overflow-hidden border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-800/80 dark:bg-slate-800/80 light:bg-slate-100 text-xs uppercase text-muted tracking-wider font-semibold border-b border-slate-700 dark:border-slate-700 light:border-slate-300">
+            <tr>
+              <th scope="col" class="py-3.5 px-4 w-8 text-center">#</th>
+              <th scope="col" class="py-3.5 px-4 cursor-pointer hover:text-heading select-none" onclick="handleSort('name')">
+                Manufacturer / Model <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right cursor-pointer hover:text-heading select-none" onclick="handleSort('currentSales')">
+                <span id="colCurrentHeader">Current Vol</span> <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right cursor-pointer hover:text-heading select-none" onclick="handleSort('yoySales')">
+                <span id="colYoYHeader">YoY Vol</span> <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right cursor-pointer hover:text-heading select-none" onclick="handleSort('yoyGrowth')">
+                YoY Growth <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right cursor-pointer hover:text-heading select-none" onclick="handleSort('momSales')">
+                <span id="colMoMHeader">MoM Vol</span> <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right cursor-pointer hover:text-heading select-none" onclick="handleSort('momGrowth')">
+                MoM Growth <i class="fa-solid fa-sort ml-1 text-slate-500"></i>
+              </th>
+              <th scope="col" class="py-3.5 px-4 text-right">Market Share</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody" class="divide-y divide-slate-800 dark:divide-slate-800 light:divide-slate-200">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Single Vehicle Historical Performance Modal -->
+  <div id="vehicleModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 dark:bg-slate-900 light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-purple-600/20 text-purple-400 rounded-xl">
+            <i class="fa-solid fa-chart-line text-lg"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-heading" id="vehicleModalTitle">Vehicle Deep Dive</h3>
+            <p class="text-xs text-muted" id="vehicleModalSubtitle">Historical Sales & Multi-Year Trends</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <!-- Vehicle Switcher Dropdown -->
+          <div class="relative w-48 sm:w-64">
+            <select id="vehicleSelectDropdown" onchange="loadVehicleDeepDive(this.value)" class="bg-slate-800 dark:bg-slate-800 light:bg-slate-100 border border-slate-700 dark:border-slate-700 light:border-slate-300 text-heading text-xs rounded-lg p-2 pr-7 w-full cursor-pointer font-medium appearance-none">
+              <!-- Populated by JS -->
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+              <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </div>
+          </div>
+          <button onclick="closeVehicleModal()" class="text-muted hover:text-heading text-lg p-1 transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1">
+        
+        <!-- Summary Cards Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="glass-card p-3.5 rounded-xl">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Lifetime Volume</span>
+            <div class="text-lg sm:text-xl font-extrabold text-heading mt-1" id="vKpiLifetime">0</div>
+            <span class="text-[10px] text-muted" id="vKpiMonthsCount">0 months tracked</span>
+          </div>
+          
+          <div class="glass-card p-3.5 rounded-xl">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Best Month Volume</span>
+            <div class="text-lg sm:text-xl font-extrabold text-emerald-400 mt-1" id="vKpiPeakVol">0</div>
+            <span class="text-[10px] text-muted truncate block" id="vKpiPeakMonth">--</span>
+          </div>
+
+          <div class="glass-card p-3.5 rounded-xl">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Monthly Average</span>
+            <div class="text-lg sm:text-xl font-extrabold text-heading mt-1" id="vKpiAvgVol">0</div>
+            <span class="text-[10px] text-muted">units / month</span>
+          </div>
+
+          <div class="glass-card p-3.5 rounded-xl">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Peak Variance</span>
+            <div class="text-lg sm:text-xl font-extrabold mt-1" id="vKpiPeakDelta">0%</div>
+            <span class="text-[10px] text-muted">Current vs Peak</span>
+          </div>
+        </div>
+
+        <!-- Chart Section with Benchmark Comparison Option -->
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <h4 class="text-xs font-bold uppercase text-muted tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-purple-400"></i> Monthly Volume Trajectory
+            </h4>
+            
+            <!-- Comparison Selector -->
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+              <span class="text-xs text-muted">Compare against:</span>
+              <select id="compareVehicleDropdown" onchange="renderVehicleChart()" class="bg-slate-800 dark:bg-slate-800 light:bg-slate-100 border border-slate-700 text-heading text-xs rounded-lg p-1.5 cursor-pointer font-medium">
+                <option value="none">None (Single Model)</option>
+                <option value="brand">Parent Manufacturer Total</option>
+                <!-- Other models added via JS -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Canvas Chart -->
+          <div class="w-full h-60 relative">
+            <canvas id="vehicleTrendCanvas" class="w-full h-full block"></canvas>
+          </div>
+          <div class="flex items-center justify-center space-x-6 text-xs text-muted pt-1">
+            <span class="flex items-center space-x-1.5">
+              <span class="w-3 h-3 rounded-sm bg-purple-500 inline-block"></span>
+              <span id="chartLegendPrimary">Selected Vehicle</span>
+            </span>
+            <span id="chartLegendCompareWrap" class="flex items-center space-x-1.5 hidden">
+              <span class="w-3 h-3 rounded-sm bg-amber-500 inline-block"></span>
+              <span id="chartLegendCompare">Benchmark</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Annual Summary & Timeline Data Table -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Annual Aggregates -->
+          <div class="glass-card p-4 rounded-xl md:col-span-1 space-y-3">
+            <h4 class="text-xs font-bold uppercase text-muted tracking-wider">Annual Breakdown</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-800/50 text-muted border-b border-slate-700">
+                  <tr>
+                    <th class="p-2">Year</th>
+                    <th class="p-2 text-right">Volume</th>
+                    <th class="p-2 text-right">YoY</th>
+                  </tr>
+                </thead>
+                <tbody id="vAnnualTableBody" class="divide-y divide-slate-800">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Monthly Timeline Table -->
+          <div class="glass-card p-4 rounded-xl md:col-span-2 space-y-3">
+            <h4 class="text-xs font-bold uppercase text-muted tracking-wider">Monthly Breakdown Log</h4>
+            <div class="max-h-48 overflow-y-auto border border-slate-800 rounded-lg">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-800/80 text-muted sticky top-0">
+                  <tr>
+                    <th class="p-2">Month</th>
+                    <th class="p-2 text-right">Units Sold</th>
+                    <th class="p-2 text-right">MoM Growth</th>
+                    <th class="p-2 text-right">YoY Growth</th>
+                  </tr>
+                </thead>
+                <tbody id="vMonthlyTableBody" class="divide-y divide-slate-800 font-mono">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between">
+        <span class="text-xs text-muted" id="vehicleModelFooterInfo">Vehicle Analysis View</span>
+        <button onclick="closeVehicleModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition-colors">
+          Close Analysis
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Single Data Record Entry Modal -->
+  <div id="dataModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 dark:bg-slate-900 light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-xl w-full max-w-md overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 border-b border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-heading">Add / Edit Sales Record</h3>
+        <button onclick="closeModal()" class="text-muted hover:text-heading text-lg p-1 transition-colors">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="salesForm" onsubmit="handleSaveData(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">Target Period (YYYY-MM)</label>
+          <input type="month" id="modalPeriod" required class="w-full bg-slate-950 dark:bg-slate-950 light:bg-slate-50 border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-lg p-2.5 text-sm text-heading focus:ring-brand-500 focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">Manufacturer</label>
+          <input type="text" id="modalMfg" list="mfgList" required placeholder="e.g. Hyundai" class="w-full bg-slate-950 dark:bg-slate-950 light:bg-slate-50 border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-lg p-2.5 text-sm text-heading focus:ring-brand-500 focus:border-brand-500">
+          <datalist id="mfgList"></datalist>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">Model Name</label>
+          <input type="text" id="modalModel" required placeholder="e.g. Creta" class="w-full bg-slate-950 dark:bg-slate-950 light:bg-slate-50 border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-lg p-2.5 text-sm text-heading focus:ring-brand-500 focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">Sales Volume (Units)</label>
+          <input type="number" id="modalVolume" min="0" required placeholder="17657" class="w-full bg-slate-950 dark:bg-slate-950 light:bg-slate-50 border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-lg p-2.5 text-sm text-heading focus:ring-brand-500 focus:border-brand-500">
+        </div>
+        <div class="pt-4 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-end space-x-3">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-colors">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-lg shadow-md transition-all">Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bulk Import Data Modal -->
+  <div id="bulkModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 dark:bg-slate-900 light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-heading flex items-center gap-2">
+          <i class="fa-solid fa-file-csv text-emerald-500"></i> Bulk Data Import Tool
+        </h3>
+        <button onclick="closeBulkModal()" class="text-muted hover:text-heading text-lg p-1 transition-colors">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-5 flex-1">
+        
+        <!-- Tab Switches -->
+        <div class="flex items-center border-b border-slate-800 dark:border-slate-800 light:border-slate-200 space-x-6 text-sm">
+          <button onclick="switchBulkTab('file')" id="tabBtnFile" class="pb-2.5 font-semibold text-brand-500 border-b-2 border-brand-500 flex items-center space-x-2">
+            <i class="fa-solid fa-upload"></i>
+            <span>File Upload (CSV/JSON)</span>
+          </button>
+          <button onclick="switchBulkTab('paste')" id="tabBtnPaste" class="pb-2.5 font-medium text-muted hover:text-heading flex items-center space-x-2">
+            <i class="fa-solid fa-paste"></i>
+            <span>Paste Raw Text</span>
+          </button>
+          <div class="flex-1 flex justify-end pb-2">
+            <button onclick="downloadCSVTemplate()" class="text-xs text-brand-500 hover:text-brand-400 font-medium flex items-center space-x-1">
+              <i class="fa-solid fa-file-download"></i>
+              <span>Download Template</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- File Drag & Drop Panel -->
+        <div id="bulkFilePanel" class="space-y-3">
+          <div id="dropZone" onclick="document.getElementById('fileInput').click()" class="border-2 border-dashed border-slate-700 hover:border-brand-500 dark:border-slate-700 light:border-slate-300 rounded-xl p-8 text-center cursor-pointer bg-slate-950/40 dark:bg-slate-950/40 light:bg-slate-50 transition-colors">
+            <i class="fa-solid fa-cloud-arrow-up text-3xl text-brand-500 mb-2"></i>
+            <p class="text-sm font-semibold text-heading">Click to browse or drag & drop CSV/JSON file</p>
+            <p class="text-xs text-muted mt-1">Supports standard CSV (Manufacturer, Model, Month, Units) or Matrix/Wide CSV formats</p>
+            <input type="file" id="fileInput" accept=".csv,.json" class="hidden" onchange="handleFileSelect(event)">
+          </div>
+        </div>
+
+        <!-- Raw Paste Area Panel -->
+        <div id="bulkPastePanel" class="space-y-3 hidden">
+          <textarea id="pasteInput" rows="6" placeholder="Manufacturer, Model, Period, Units&#10;Hyundai, Creta, 2026-10, 18200&#10;Tata, Punch, 2026-10, 21000" class="w-full bg-slate-950 dark:bg-slate-950 light:bg-slate-50 border border-slate-700 dark:border-slate-700 light:border-slate-300 rounded-lg p-3 text-xs font-mono text-heading focus:ring-brand-500 focus:border-brand-500"></textarea>
+          <button onclick="parsePastedText()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 rounded-lg transition-colors">
+            Parse & Validate Raw Text
+          </button>
+        </div>
+
+        <!-- Parse Preview Table -->
+        <div id="previewContainer" class="space-y-3 hidden">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase text-muted tracking-wider">Validation Preview</h4>
+            <div id="parseSummary" class="text-xs space-x-2"></div>
+          </div>
+
+          <div class="max-h-48 overflow-y-auto border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded-lg">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-800 dark:bg-slate-800 light:bg-slate-100 text-muted sticky top-0">
+                <tr>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Manufacturer</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Period</th>
+                  <th class="p-2 text-right">Units</th>
+                </tr>
+              </thead>
+              <tbody id="previewTableBody" class="divide-y divide-slate-800 dark:divide-slate-800 light:divide-slate-200 font-mono">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between">
+        <button onclick="closeBulkModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-colors">
+          Cancel
+        </button>
+        <button id="commitBulkBtn" disabled onclick="commitBulkImport()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md transition-all">
+          Merge into Database
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-brand-600 text-white text-sm font-semibold px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="toastMessage">Action completed!</span>
+    </div>
+  </div>
+
+  <!-- Main JavaScript Engine -->
+  <script>
+    // Initial Complete September 2026 Dataset
+    const defaultAutoSalesData = [
+      // Citroën
+      { mfg: "Citroën", model: "C3", sales: { "2026-09": 296, "2025-09": 444, "2026-08": 321 } },
+      { mfg: "Citroën", model: "Ë-C3", sales: { "2026-09": 55, "2025-09": 17, "2026-08": 61 } },
+      { mfg: "Citroën", model: "C3 Aircross", sales: { "2026-09": 70, "2025-09": 59, "2026-08": 80 } },
+      { mfg: "Citroën", model: "Basalt", sales: { "2026-09": 461, "2025-09": 0, "2026-08": 432 } },
+      { mfg: "Citroën", model: "C5 Aircross", sales: { "2026-09": 18, "2025-09": 213, "2026-08": 33 } },
+
+      // FCA
+      { mfg: "FCA", model: "Compass", sales: { "2026-09": 110, "2025-09": 140, "2026-08": 114 } },
+      { mfg: "FCA", model: "Meridian", sales: { "2026-09": 97, "2025-09": 110, "2026-08": 88 } },
+      { mfg: "FCA", model: "Wrangler", sales: { "2026-09": 45, "2025-09": 47, "2026-08": 24 } },
+      { mfg: "FCA", model: "Grand Cherokee", sales: { "2026-09": 0, "2025-09": 3, "2026-08": 0 } },
+
+      // Honda
+      { mfg: "Honda", model: "Amaze", sales: { "2026-09": 2120, "2025-09": 2210, "2026-08": 2221 } },
+      { mfg: "Honda", model: "Elevate", sales: { "2026-09": 1515, "2025-09": 2560, "2026-08": 1324 } },
+      { mfg: "Honda", model: "City", sales: { "2026-09": 599, "2025-09": 466, "2026-08": 1235 } },
+      { mfg: "Honda", model: "Civic", sales: { "2026-09": 231, "2025-09": 70, "2026-08": 585 } },
+      { mfg: "Honda", model: "CR-V", sales: { "2026-09": 0, "2025-09": 0, "2026-08": 0 } },
+
+      // Hyundai
+      { mfg: "Hyundai", model: "Creta", sales: { "2026-09": 17657, "2025-09": 18851, "2026-08": 16846 } },
+      { mfg: "Hyundai", model: "Venue", sales: { "2026-09": 11466, "2025-09": 11484, "2026-08": 11365 } },
+      { mfg: "Hyundai", model: "Exter", sales: { "2026-09": 8144, "2025-09": 5637, "2026-08": 8137 } },
+      { mfg: "Hyundai", model: "i20", sales: { "2026-09": 7320, "2025-09": 7243, "2026-08": 6888 } },
+      { mfg: "Hyundai", model: "Grand i10", sales: { "2026-09": 5310, "2025-09": 5233, "2026-08": 5420 } },
+      { mfg: "Hyundai", model: "Aura", sales: { "2026-09": 4202, "2025-09": 3989, "2026-08": 4145 } },
+      { mfg: "Hyundai", model: "i10 Nios", sales: { "2026-09": 2420, "2025-09": 1732, "2026-08": 2745 } },
+      { mfg: "Hyundai", model: "Alcazar", sales: { "2026-09": 742, "2025-09": 565, "2026-08": 842 } },
+      { mfg: "Hyundai", model: "Verna", sales: { "2026-09": 520, "2025-09": 75, "2026-08": 362 } },
+      { mfg: "Hyundai", model: "IONIQ 5", sales: { "2026-09": 9, "2025-09": 2, "2026-08": 16 } },
+      { mfg: "Hyundai", model: "Tucson", sales: { "2026-09": 0, "2025-09": 0, "2026-08": 0 } },
+
+      // Kia
+      { mfg: "Kia", model: "Seltos", sales: { "2026-09": 12912, "2025-09": 11544, "2026-08": 11888 } },
+      { mfg: "Kia", model: "Sonet", sales: { "2026-09": 9423, "2025-09": 9020, "2026-08": 8970 } },
+      { mfg: "Kia", model: "Carens", sales: { "2026-09": 6318, "2025-09": 2390, "2026-08": 5948 } },
+      { mfg: "Kia", model: "Syros", sales: { "2026-09": 3349, "2025-09": 465, "2026-08": 2242 } },
+      { mfg: "Kia", model: "Carnival", sales: { "2026-09": 15, "2025-09": 0, "2026-08": 0 } },
+      { mfg: "Kia", model: "EV6", sales: { "2026-09": 0, "2025-09": 0, "2026-08": 0 } },
+      { mfg: "Kia", model: "EV9", sales: { "2026-09": 0, "2025-09": 0, "2026-08": 0 } },
+
+      // Mahindra
+      { mfg: "Mahindra", model: "Scorpio", sales: { "2026-09": 16816, "2025-09": 14484, "2026-08": 15220 } },
+      { mfg: "Mahindra", model: "XUV 7XO", sales: { "2026-09": 13013, "2025-09": 11765, "2026-08": 12011 } },
+      { mfg: "Mahindra", model: "XUV 3XO", sales: { "2026-09": 10823, "2025-09": 9070, "2026-08": 10210 } },
+      { mfg: "Mahindra", model: "Bolero", sales: { "2026-09": 9710, "2025-09": 2747, "2026-08": 8521 } },
+      { mfg: "Mahindra", model: "Thar", sales: { "2026-09": 9008, "2025-09": 11100, "2026-08": 10141 } },
+      { mfg: "Mahindra", model: "BE", sales: { "2026-09": 4636, "2025-09": 0, "2026-08": 0 } },
+      { mfg: "Mahindra", model: "XEV 9e", sales: { "2026-09": 1517, "2025-09": 1310, "2026-08": 1414 } },
+      { mfg: "Mahindra", model: "XUV 400", sales: { "2026-09": 1515, "2025-09": 1210, "2026-08": 1324 } },
+      { mfg: "Mahindra", model: "ROXX", sales: { "2026-09": 13, "2025-09": 140, "2026-08": 10 } },
+      { mfg: "Mahindra", model: "Marazzo", sales: { "2026-09": 0, "2025-09": 0, "2026-08": 0 } },
+
+      // Maruti Suzuki
+      { mfg: "Maruti Suzuki", model: "Fronx", sales: { "2026-09": 19202, "2025-09": 13710, "2026-08": 19710 } },
+      { mfg: "Maruti Suzuki", model: "Wagon R", sales: { "2026-09": 18615, "2025-09": 16333, "2026-08": 20410 } },
+      { mfg: "Maruti Suzuki", model: "Swift", sales: { "2026-09": 17359, "2025-09": 15547, "2026-08": 16912 } },
+      { mfg: "Maruti Suzuki", model: "Brezza", sales: { "2026-09": 16312, "2025-09": 11433, "2026-08": 15482 } },
+      { mfg: "Maruti Suzuki", model: "Ertiga", sales: { "2026-09": 15815, "2025-09": 4320, "2026-08": 15112 } },
+      { mfg: "Maruti Suzuki", model: "Dzire", sales: { "2026-09": 15210, "2025-09": 15110, "2026-08": 14845 } },
+      { mfg: "Maruti Suzuki", model: "Baleno", sales: { "2026-09": 14359, "2025-09": 15410, "2026-08": 13911 } },
+      { mfg: "Maruti Suzuki", model: "Eeco", sales: { "2026-09": 13111, "2025-09": 12230, "2026-08": 11911 } },
+      { mfg: "Maruti Suzuki", model: "Vitara Brezza", sales: { "2026-09": 11010, "2025-09": 7650, "2026-08": 11410 } },
+      { mfg: "Maruti Suzuki", model: "Alto", sales: { "2026-09": 10023, "2025-09": 11210, "2026-08": 9812 } },
+      { mfg: "Maruti Suzuki", model: "Grand Vitara", sales: { "2026-09": 8513, "2025-09": 4320, "2026-08": 7921 } },
+      { mfg: "Maruti Suzuki", model: "XL6", sales: { "2026-09": 3251, "2025-09": 2120, "2026-08": 3332 } },
+      { mfg: "Maruti Suzuki", model: "Celerio", sales: { "2026-09": 2423, "2025-09": 1070, "2026-08": 2989 } },
+      { mfg: "Maruti Suzuki", model: "eVitara", sales: { "2026-09": 1242, "2025-09": 1230, "2026-08": 1288 } },
+      { mfg: "Maruti Suzuki", model: "S-Presso", sales: { "2026-09": 544, "2025-09": 292, "2026-08": 585 } },
+      { mfg: "Maruti Suzuki", model: "Invicto", sales: { "2026-09": 272, "2025-09": 215, "2026-08": 214 } },
+      { mfg: "Maruti Suzuki", model: "Ignis", sales: { "2026-09": 22, "2025-09": 110, "2026-08": 24 } },
+      { mfg: "Maruti Suzuki", model: "Ciaz", sales: { "2026-09": 1, "2025-09": 220, "2026-08": 3 } },
+
+      // Morris Garages
+      { mfg: "Morris Garages", model: "Windsor", sales: { "2026-09": 3300, "2025-09": 2110, "2026-08": 3705 } },
+      { mfg: "Morris Garages", model: "Hector", sales: { "2026-09": 728, "2025-09": 460, "2026-08": 1177 } },
+      { mfg: "Morris Garages", model: "Comet", sales: { "2026-09": 290, "2025-09": 150, "2026-08": 265 } },
+      { mfg: "Morris Garages", model: "Astor", sales: { "2026-09": 284, "2025-09": 420, "2026-08": 720 } },
+      { mfg: "Morris Garages", model: "Gloster", sales: { "2026-09": 97, "2025-09": 105, "2026-08": 141 } },
+
+      // Nissan
+      { mfg: "Nissan", model: "Magnite", sales: { "2026-09": 1502, "2025-09": 1520, "2026-08": 1452 } },
+      { mfg: "Nissan", model: "Qashqai", sales: { "2026-09": 1401, "2025-09": 1215, "2026-08": 1322 } },
+      { mfg: "Nissan", model: "X-Trail", sales: { "2026-09": 400, "2025-09": 210, "2026-08": 451 } },
+
+      // Renault
+      { mfg: "Renault", model: "Triber", sales: { "2026-09": 1743, "2025-09": 2250, "2026-08": 1550 } },
+      { mfg: "Renault", model: "Kiger", sales: { "2026-09": 614, "2025-09": 1166, "2026-08": 455 } },
+      { mfg: "Renault", model: "Kwid", sales: { "2026-09": 577, "2025-09": 512, "2026-08": 426 } },
+      { mfg: "Renault", model: "Duster", sales: { "2026-09": 465, "2025-09": 0, "2026-08": 412 } },
+
+      // Skoda
+      { mfg: "Skoda", model: "Kushaq", sales: { "2026-09": 4120, "2025-09": 3989, "2026-08": 3590 } },
+      { mfg: "Skoda", model: "Kylaq", sales: { "2026-09": 1152, "2025-09": 769, "2026-08": 1520 } },
+      { mfg: "Skoda", model: "Slavia", sales: { "2026-09": 709, "2025-09": 1520, "2026-08": 497 } },
+      { mfg: "Skoda", model: "Octavia", sales: { "2026-09": 98, "2025-09": 120, "2026-08": 86 } },
+      { mfg: "Skoda", model: "Kodiaq", sales: { "2026-09": 23, "2025-09": 230, "2026-08": 32 } },
+
+      // Tata
+      { mfg: "Tata", model: "Punch", sales: { "2026-09": 20333, "2025-09": 15831, "2026-08": 21510 } },
+      { mfg: "Tata", model: "Nexon", sales: { "2026-09": 12454, "2025-09": 13210, "2026-08": 11432 } },
+      { mfg: "Tata", model: "Tiago", sales: { "2026-09": 7142, "2025-09": 8230, "2026-08": 8321 } },
+      { mfg: "Tata", model: "Altroz", sales: { "2026-09": 3423, "2025-09": 4143, "2026-08": 3981 } },
+      { mfg: "Tata", model: "Tigor", sales: { "2026-09": 2610, "2025-09": 2210, "2026-08": 2410 } },
+      { mfg: "Tata", model: "Safari", sales: { "2026-09": 2610, "2025-09": 2210, "2026-08": 2410 } },
+      { mfg: "Tata", model: "Curvv", sales: { "2026-09": 2410, "2025-09": 0, "2026-08": 2110 } },
+      { mfg: "Tata", model: "Harrier", sales: { "2026-09": 2401, "2025-09": 2120, "2026-08": 2143 } },
+
+      // Toyota
+      { mfg: "Toyota", model: "Innova + Hycross", sales: { "2026-09": 8008, "2025-09": 9299, "2026-08": 9120 } },
+      { mfg: "Toyota", model: "Hyryder", sales: { "2026-09": 7115, "2025-09": 6210, "2026-08": 6512 } },
+      { mfg: "Toyota", model: "Taisor", sales: { "2026-09": 3310, "2025-09": 2110, "2026-08": 3514 } },
+      { mfg: "Toyota", model: "Rumion", sales: { "2026-09": 2481, "2025-09": 829, "2026-08": 2291 } },
+      { mfg: "Toyota", model: "Fortuner", sales: { "2026-09": 2423, "2025-09": 2752, "2026-08": 2810 } },
+      { mfg: "Toyota", model: "Glanza", sales: { "2026-09": 1110, "2025-09": 2410, "2026-08": 1410 } },
+      { mfg: "Toyota", model: "Urban Cruiser", sales: { "2026-09": 398, "2025-09": 212, "2026-08": 375 } },
+      { mfg: "Toyota", model: "Hilux", sales: { "2026-09": 171, "2025-09": 181, "2026-08": 191 } },
+      { mfg: "Toyota", model: "Vellfire", sales: { "2026-09": 112, "2025-09": 107, "2026-08": 225 } },
+      { mfg: "Toyota", model: "Camry", sales: { "2026-09": 13, "2025-09": 110, "2026-08": 11 } },
+      { mfg: "Toyota", model: "LC300", sales: { "2026-09": 1, "2025-09": 2, "2026-08": 3 } },
+
+      // Volkswagen
+      { mfg: "Volkswagen", model: "Virtus", sales: { "2026-09": 1172, "2025-09": 1310, "2026-08": 1310 } },
+      { mfg: "Volkswagen", model: "Taigun", sales: { "2026-09": 994, "2025-09": 1114, "2026-08": 1114 } },
+      { mfg: "Volkswagen", model: "Tiguan", sales: { "2026-09": 49, "2025-09": 230, "2026-08": 75 } }
+    ];
+
+    // Working dataset
+    let autoSalesData = JSON.parse(JSON.stringify(defaultAutoSalesData));
+
+    // UI State
+    let collapsedMfg = {};
+    let sortColumn = 'currentSales';
+    let sortDirection = 'desc';
+    let parsedBulkRecords = [];
+
+    // Helper: Number Formatter
+    const formatNum = (num) => new Intl.NumberFormat('en-IN').format(num || 0);
+
+    // Helper: Growth Badge
+    const getGrowthBadge = (growth) => {
+      if (growth === null || growth === undefined || isNaN(growth)) return `<span class="text-slate-500">-</span>`;
+      if (growth > 0) {
+        return `<span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><i class="fa-solid fa-arrow-up text-[10px] mr-1"></i>${growth}%</span>`;
+      } else if (growth < 0) {
+        return `<span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20"><i class="fa-solid fa-arrow-down text-[10px] mr-1"></i>${Math.abs(growth)}%</span>`;
+      } else {
+        return `<span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">0%</span>`;
+      }
+    };
+
+    // Theme Management
+    function initTheme() {
+      const savedTheme = localStorage.getItem('auto_sales_theme') || 'dark';
+      setTheme(savedTheme);
+    }
+
+    function setTheme(theme) {
+      const icon = document.getElementById('themeIcon');
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+        icon.className = 'fa-solid fa-sun text-amber-400 text-sm';
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        icon.className = 'fa-solid fa-moon text-sm';
+      }
+      localStorage.setItem('auto_sales_theme', theme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = localStorage.getItem('auto_sales_theme') || 'dark';
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    // Local Storage Persistence
+    function loadPersistedData() {
+      const stored = localStorage.getItem('auto_sales_dataset');
+      if (stored) {
+        try {
+          autoSalesData = JSON.parse(stored);
+        } catch(e) {
+          console.error("Failed to parse stored dataset", e);
+        }
+      }
+    }
+
+    function savePersistedData() {
+      localStorage.setItem('auto_sales_dataset', JSON.stringify(autoSalesData));
+    }
+
+    function confirmResetData() {
+      if (window.confirm("Are you sure you want to reset all data back to default September 2026 dataset? Any custom additions will be lost.")) {
+        autoSalesData = JSON.parse(JSON.stringify(defaultAutoSalesData));
+        localStorage.removeItem('auto_sales_dataset');
+        populateMonthSelector();
+        renderDashboard();
+        showToast("Dataset reset to defaults!");
+      }
+    }
+
+    // Get Comparison Keys for Selected Month
+    function getComparisonKeys(selectedPeriod) {
+      const [year, month] = selectedPeriod.split('-').map(Number);
+      
+      const prevMonth = month === 1 ? 12 : month - 1;
+      const prevMonthYear = month === 1 ? year - 1 : year;
+      const momKey = `${prevMonthYear}-${String(prevMonth).padStart(2, '0')}`;
+      const yoyKey = `${year - 1}-${String(month).padStart(2, '0')}`;
+
+      return { currentKey: selectedPeriod, momKey, yoyKey };
+    }
+
+    // Metric Calculations
+    function calculateMetrics(salesObj, currentKey, momKey, yoyKey) {
+      const currentSales = salesObj[currentKey] || 0;
+      const momSales = salesObj[momKey] || 0;
+      const yoySales = salesObj[yoyKey] || 0;
+
+      const momGrowth = momSales > 0 ? Math.round(((currentSales - momSales) / momSales) * 100) : (currentSales > 0 ? 100 : 0);
+      const yoyGrowth = yoySales > 0 ? Math.round(((currentSales - yoySales) / yoySales) * 100) : (currentSales > 0 ? 100 : 0);
+
+      return { currentSales, momSales, yoySales, momGrowth, yoyGrowth };
+    }
+
+    // Populate Dynamic Month Selector
+    function populateMonthSelector() {
+      const monthSet = new Set();
+      autoSalesData.forEach(item => {
+        Object.keys(item.sales).forEach(period => monthSet.add(period));
+      });
+
+      const sortedMonths = Array.from(monthSet).sort().reverse();
+      const selector = document.getElementById('monthSelector');
+      const currentVal = selector.value || '2026-09';
+      
+      selector.innerHTML = '';
+      sortedMonths.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        const d = new Date(m + '-01');
+        opt.textContent = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        if (m === currentVal || (!selector.value && m === '2026-09')) {
+          opt.selected = true;
+        }
+        selector.appendChild(opt);
+      });
+
+      if (!selector.value && sortedMonths.length > 0) {
+        selector.value = sortedMonths[0];
+      }
+    }
+
+    // Render Main Dashboard
+    function renderDashboard() {
+      const selector = document.getElementById('monthSelector');
+      if (!selector.value) populateMonthSelector();
+      
+      const selectedPeriod = selector.value || '2026-09';
+      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+      const { currentKey, momKey, yoyKey } = getComparisonKeys(selectedPeriod);
+
+      // Header Labels
+      const periodDate = new Date(selectedPeriod + '-01');
+      const momDate = new Date(momKey + '-01');
+      const yoyDate = new Date(yoyKey + '-01');
+      
+      const formatHeaderDate = (d) => d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+
+      document.getElementById('colCurrentHeader').textContent = `${formatHeaderDate(periodDate)} Vol`;
+      document.getElementById('colMoMHeader').textContent = `${formatHeaderDate(momDate)} Vol`;
+      document.getElementById('colYoYHeader').textContent = `${formatHeaderDate(yoyDate)} Vol`;
+
+      // Filter Data
+      const filteredData = autoSalesData.filter(item => 
+        item.mfg.toLowerCase().includes(searchVal) || item.model.toLowerCase().includes(searchVal)
+      );
+
+      document.getElementById('recordCountText').textContent = `Showing ${filteredData.length} models`;
+
+      // Group by Manufacturer
+      const grouped = {};
+      let totalIndustryVolume = 0;
+      let totalIndustryYoYVolume = 0;
+      let totalIndustryMoMVolume = 0;
+
+      filteredData.forEach(item => {
+        const metrics = calculateMetrics(item.sales, currentKey, momKey, yoyKey);
+        
+        totalIndustryVolume += metrics.currentSales;
+        totalIndustryYoYVolume += metrics.yoySales;
+        totalIndustryMoMVolume += metrics.momSales;
+
+        if (!grouped[item.mfg]) {
+          grouped[item.mfg] = {
+            mfgName: item.mfg,
+            currentSales: 0,
+            yoySales: 0,
+            momSales: 0,
+            models: []
+          };
+        }
+
+        grouped[item.mfg].currentSales += metrics.currentSales;
+        grouped[item.mfg].yoySales += metrics.yoySales;
+        grouped[item.mfg].momSales += metrics.momSales;
+
+        grouped[item.mfg].models.push({
+          ...item,
+          ...metrics
+        });
+      });
+
+      // Calculate Manufacturer Growths
+      Object.values(grouped).forEach(mfgGroup => {
+        mfgGroup.yoyGrowth = mfgGroup.yoySales > 0 ? Math.round(((mfgGroup.currentSales - mfgGroup.yoySales) / mfgGroup.yoySales) * 100) : 0;
+        mfgGroup.momGrowth = mfgGroup.momSales > 0 ? Math.round(((mfgGroup.currentSales - mfgGroup.momSales) / mfgGroup.momSales) * 100) : 0;
+      });
+
+      // Sort Groups
+      let sortedGroups = Object.values(grouped);
+      sortedGroups.sort((a, b) => {
+        let valA = a[sortColumn] !== undefined ? a[sortColumn] : a.mfgName;
+        let valB = b[sortColumn] !== undefined ? b[sortColumn] : b.mfgName;
+        if (typeof valA === 'string') {
+          return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+        return sortDirection === 'asc' ? valA - valB : valB - valA;
+      });
+
+      // Render KPIs
+      renderKPICards(totalIndustryVolume, totalIndustryYoYVolume, totalIndustryMoMVolume, sortedGroups, filteredData);
+
+      // Render Table HTML
+      const tableBody = document.getElementById('salesTableBody');
+      tableBody.innerHTML = '';
+
+      if (sortedGroups.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-8 text-slate-500 font-medium">
+              <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+              No sales records found matching "${searchVal}"
+            </td>
+          </tr>`;
+        return;
+      }
+
+      let mfgIndex = 1;
+      sortedGroups.forEach(mfgGroup => {
+        const isCollapsed = collapsedMfg[mfgGroup.mfgName];
+        const mfgMarketShare = totalIndustryVolume > 0 ? ((mfgGroup.currentSales / totalIndustryVolume) * 100).toFixed(1) : '0.0';
+
+        // Manufacturer Row Header
+        const mfgRow = document.createElement('tr');
+        mfgRow.className = "bg-slate-800/60 font-semibold text-heading hover:bg-slate-800 transition-colors cursor-pointer border-t border-slate-700/80";
+        mfgRow.innerHTML = `
+          <td class="py-3 px-4 text-center text-xs text-muted" onclick="toggleMfgCollapse('${mfgGroup.mfgName}')">${mfgIndex++}</td>
+          <td class="py-3 px-4 flex items-center space-x-2" onclick="toggleMfgCollapse('${mfgGroup.mfgName}')">
+            <i class="fa-solid fa-chevron-${isCollapsed ? 'right' : 'down'} text-xs text-muted w-4"></i>
+            <span class="font-bold text-heading">${mfgGroup.mfgName}</span>
+            <span class="text-xs bg-slate-700 dark:bg-slate-700 light:bg-slate-200 text-muted px-2 py-0.5 rounded-full font-normal">${mfgGroup.models.length} models</span>
+          </td>
+          <td class="py-3 px-4 text-right font-bold text-heading">${formatNum(mfgGroup.currentSales)}</td>
+          <td class="py-3 px-4 text-right text-muted font-medium">${formatNum(mfgGroup.yoySales)}</td>
+          <td class="py-3 px-4 text-right">${getGrowthBadge(mfgGroup.yoyGrowth)}</td>
+          <td class="py-3 px-4 text-right text-muted font-medium">${formatNum(mfgGroup.momSales)}</td>
+          <td class="py-3 px-4 text-right">${getGrowthBadge(mfgGroup.momGrowth)}</td>
+          <td class="py-3 px-4 text-right text-brand-500 font-bold">${mfgMarketShare}%</td>
+        `;
+        tableBody.appendChild(mfgRow);
+
+        // Model Rows
+        if (!isCollapsed) {
+          mfgGroup.models.sort((a, b) => {
+            let valA = a[sortColumn] !== undefined ? a[sortColumn] : a.model;
+            let valB = b[sortColumn] !== undefined ? b[sortColumn] : b.model;
+            if (typeof valA === 'string') {
+              return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+            }
+            return sortDirection === 'asc' ? valA - valB : valB - valA;
+          });
+
+          mfgGroup.models.forEach(model => {
+            const modelShare = totalIndustryVolume > 0 ? ((model.currentSales / totalIndustryVolume) * 100).toFixed(1) : '0.0';
+            const modelRow = document.createElement('tr');
+            modelRow.className = "hover:bg-slate-800/40 transition-colors text-main";
+            modelRow.innerHTML = `
+              <td class="py-2.5 px-4"></td>
+              <td class="py-2.5 px-4 pl-10 flex items-center space-x-2 cursor-pointer group" onclick="openVehicleAnalyticsModal('${model.mfg}', '${model.model}')">
+                <i class="fa-solid fa-car text-xs text-muted group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium text-heading group-hover:text-purple-400 underline-offset-2 group-hover:underline transition-colors">${model.model}</span>
+                <i class="fa-solid fa-chart-line text-[10px] text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity ml-1"></i>
+              </td>
+              <td class="py-2.5 px-4 text-right font-semibold text-heading">${formatNum(model.currentSales)}</td>
+              <td class="py-2.5 px-4 text-right text-muted">${formatNum(model.yoySales)}</td>
+              <td class="py-2.5 px-4 text-right">${getGrowthBadge(model.yoyGrowth)}</td>
+              <td class="py-2.5 px-4 text-right text-muted">${formatNum(model.momSales)}</td>
+              <td class="py-2.5 px-4 text-right">${getGrowthBadge(model.momGrowth)}</td>
+              <td class="py-2.5 px-4 text-right text-muted text-xs">${modelShare}%</td>
+            `;
+            tableBody.appendChild(modelRow);
+          });
+        }
+      });
+    }
+
+    // KPI Cards Calculation
+    function renderKPICards(totalVol, yoyVol, momVol, sortedGroups, filteredModels) {
+      const industryYoY = yoyVol > 0 ? Math.round(((totalVol - yoyVol) / yoyVol) * 100) : 0;
+      const industryMoM = momVol > 0 ? Math.round(((totalVol - momVol) / momVol) * 100) : 0;
+
+      document.getElementById('kpiTotalVolume').textContent = formatNum(totalVol);
+      
+      const yoyEl = document.getElementById('kpiTotalVolumeYoY');
+      yoyEl.textContent = `${industryYoY > 0 ? '+' : ''}${industryYoY}%`;
+      yoyEl.className = `inline-flex items-center text-xs font-bold px-2 py-0.5 rounded ${industryYoY >= 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`;
+
+      if (sortedGroups.length > 0) {
+        const topMfg = [...sortedGroups].sort((a, b) => b.currentSales - a.currentSales)[0];
+        document.getElementById('kpiTopMfg').textContent = topMfg.mfgName;
+        document.getElementById('kpiTopMfgVolume').textContent = `${formatNum(topMfg.currentSales)} units`;
+        const share = totalVol > 0 ? ((topMfg.currentSales / totalVol) * 100).toFixed(1) : 0;
+        document.getElementById('kpiTopMfgShare').textContent = `${share}% Market Share`;
+      }
+
+      if (filteredModels.length > 0) {
+        const topGrowth = [...filteredModels].sort((a, b) => b.yoyGrowth - a.yoyGrowth)[0];
+        document.getElementById('kpiTopGrowthModel').textContent = topGrowth ? topGrowth.model : '--';
+        document.getElementById('kpiTopGrowthRate').textContent = topGrowth ? `+${topGrowth.yoyGrowth}% YoY` : '0%';
+        document.getElementById('kpiTopGrowthMfg').textContent = topGrowth ? topGrowth.mfg : '';
+      }
+
+      document.getElementById('kpiMoMVolume').textContent = formatNum(totalVol);
+      const momEl = document.getElementById('kpiMoMChange');
+      momEl.textContent = `${industryMoM > 0 ? '+' : ''}${industryMoM}%`;
+      momEl.className = `inline-flex items-center text-xs font-bold px-2 py-0.5 rounded ${industryMoM >= 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`;
+    }
+
+    // Collapse & Sort Actions
+    function toggleMfgCollapse(mfgName) {
+      collapsedMfg[mfgName] = !collapsedMfg[mfgName];
+      renderDashboard();
+    }
+
+    function toggleCollapseAll(collapse) {
+      autoSalesData.forEach(item => {
+        collapsedMfg[item.mfg] = collapse;
+      });
+      renderDashboard();
+    }
+
+    function handleSort(col) {
+      if (sortColumn === col) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = col;
+        sortDirection = 'desc';
+      }
+      renderDashboard();
+    }
+
+    // Single Add/Edit Record Modal
+    function openModal() {
+      const mfgSet = new Set(autoSalesData.map(i => i.mfg));
+      const mfgListEl = document.getElementById('mfgList');
+      mfgListEl.innerHTML = Array.from(mfgSet).map(mfg => `<option value="${mfg}">`).join('');
+
+      document.getElementById('modalPeriod').value = document.getElementById('monthSelector').value || '2026-09';
+      document.getElementById('dataModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('dataModal').classList.add('hidden');
+      document.getElementById('salesForm').reset();
+    }
+
+    function handleSaveData(e) {
+      e.preventDefault();
+      const period = document.getElementById('modalPeriod').value;
+      const mfg = document.getElementById('modalMfg').value.trim();
+      const modelName = document.getElementById('modalModel').value.trim();
+      const volume = parseInt(document.getElementById('modalVolume').value, 10);
+
+      let existingRecord = autoSalesData.find(item => 
+        item.mfg.toLowerCase() === mfg.toLowerCase() && item.model.toLowerCase() === modelName.toLowerCase()
+      );
+
+      if (existingRecord) {
+        existingRecord.sales[period] = volume;
+      } else {
+        autoSalesData.push({
+          mfg: mfg,
+          model: modelName,
+          sales: { [period]: volume }
+        });
+      }
+
+      savePersistedData();
+      populateMonthSelector();
+      document.getElementById('monthSelector').value = period;
+      closeModal();
+      renderDashboard();
+      showToast(`Saved ${formatNum(volume)} units for ${mfg} ${modelName} (${period})`);
+    }
+
+    // Bulk Import Logic
+    function openBulkModal() {
+      document.getElementById('bulkModal').classList.remove('hidden');
+      resetBulkState();
+    }
+
+    function closeBulkModal() {
+      document.getElementById('bulkModal').classList.add('hidden');
+      resetBulkState();
+    }
+
+    function resetBulkState() {
+      parsedBulkRecords = [];
+      document.getElementById('previewContainer').classList.add('hidden');
+      document.getElementById('previewTableBody').innerHTML = '';
+      document.getElementById('commitBulkBtn').disabled = true;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('pasteInput').value = '';
+    }
+
+    function switchBulkTab(tab) {
+      const filePanel = document.getElementById('bulkFilePanel');
+      const pastePanel = document.getElementById('bulkPastePanel');
+      const btnFile = document.getElementById('tabBtnFile');
+      const btnPaste = document.getElementById('tabBtnPaste');
+
+      if (tab === 'file') {
+        filePanel.classList.remove('hidden');
+        pastePanel.classList.add('hidden');
+        btnFile.className = "pb-2.5 font-semibold text-brand-500 border-b-2 border-brand-500 flex items-center space-x-2";
+        btnPaste.className = "pb-2.5 font-medium text-muted hover:text-heading flex items-center space-x-2";
+      } else {
+        filePanel.classList.add('hidden');
+        pastePanel.classList.remove('hidden');
+        btnPaste.className = "pb-2.5 font-semibold text-brand-500 border-b-2 border-brand-500 flex items-center space-x-2";
+        btnFile.className = "pb-2.5 font-medium text-muted hover:text-heading flex items-center space-x-2";
+      }
+    }
+
+    function downloadCSVTemplate() {
+      const csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent("Manufacturer,Model,Period,Units\nHyundai,Creta,2026-10,18200\nTata,Punch,2026-10,21000\nMaruti Suzuki,Swift,2026-10,17500");
+      const a = document.createElement('a');
+      a.href = csvContent;
+      a.download = "sales_import_template.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        if (file.name.endsWith('.json')) {
+          parseJSONInput(text);
+        } else {
+          parseCSVInput(text);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function parsePastedText() {
+      const rawText = document.getElementById('pasteInput').value.trim();
+      if (!rawText) return;
+
+      if (rawText.startsWith('[') || rawText.startsWith('{')) {
+        parseJSONInput(rawText);
+      } else {
+        parseCSVInput(rawText);
+      }
+    }
+
+    function normalizePeriod(pStr) {
+      if (!pStr) return '';
+      pStr = pStr.trim();
+      if (/^\d{4}-\d{2}$/.test(pStr)) return pStr;
+      
+      const monthMap = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };
+      const match = pStr.match(/([a-zA-Z]{3})[^\d]*(\d{2,4})/);
+      if (match) {
+        const m = monthMap[match[1].toLowerCase()];
+        let y = match[2];
+        if (y.length === 2) y = '20' + y;
+        if (m && y) return `${y}-${m}`;
+      }
+      return pStr;
+    }
+
+    function parseCSVInput(csvText) {
+      const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+      parsedBulkRecords = [];
+
+      if (lines.length === 0) return;
+
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+      const isMatrix = headers.some(h => /^\d{4}-\d{2}$/.test(h) || /^[a-zA-Z]{3}[^\d]*\d{2,4}$/.test(h));
+
+      if (isMatrix) {
+        // Matrix/Wide CSV parsing
+        const periodCols = [];
+        headers.forEach((h, idx) => {
+          const norm = normalizePeriod(h);
+          if (/^\d{4}-\d{2}$/.test(norm)) {
+            periodCols.push({ index: idx, period: norm });
+          }
+        });
+
+        for (let i = 1; i < lines.length; i++) {
+          const parts = lines[i].split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
+          if (parts.length >= 2) {
+            const mfg = parts[0];
+            const model = parts[1];
+            periodCols.forEach(col => {
+              const units = parseInt(parts[col.index], 10);
+              const isValid = mfg && model && col.period && !isNaN(units);
+              parsedBulkRecords.push({ mfg, model, period: col.period, units, isValid });
+            });
+          }
+        }
+      } else {
+        // Standard CSV parsing (Manufacturer, Model, Period, Units)
+        lines.forEach((line, idx) => {
+          if (idx === 0 && (line.toLowerCase().includes('manufacturer') || line.toLowerCase().includes('mfg'))) return;
+          const parts = line.split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
+          if (parts.length >= 4) {
+            const mfg = parts[0];
+            const model = parts[1];
+            let period = normalizePeriod(parts[2]);
+            const units = parseInt(parts[3], 10);
+
+            const isValid = mfg && model && period && !isNaN(units);
+            parsedBulkRecords.push({ mfg, model, period, units, isValid });
+          }
+        });
+      }
+
+      renderBulkPreview();
+    }
+
+    function parseJSONInput(jsonText) {
+      parsedBulkRecords = [];
+      try {
+        const data = JSON.parse(jsonText);
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            if (item.mfg && item.model && item.sales) {
+              Object.keys(item.sales).forEach(p => {
+                const normP = normalizePeriod(p);
+                const units = parseInt(item.sales[p], 10);
+                parsedBulkRecords.push({
+                  mfg: item.mfg,
+                  model: item.model,
+                  period: normP,
+                  units: units,
+                  isValid: item.mfg && item.model && normP && !isNaN(units)
+                });
+              });
+            }
+          });
+        }
+      } catch(e) {
+        showToast("Invalid JSON syntax!");
+      }
+      renderBulkPreview();
+    }
+
+    function renderBulkPreview() {
+      const container = document.getElementById('previewContainer');
+      const tableBody = document.getElementById('previewTableBody');
+      const summary = document.getElementById('parseSummary');
+      const commitBtn = document.getElementById('commitBulkBtn');
+
+      container.classList.remove('hidden');
+      tableBody.innerHTML = '';
+
+      const validRecords = parsedBulkRecords.filter(r => r.isValid);
+      summary.innerHTML = `
+        <span class="text-emerald-400 font-bold">${validRecords.length} Valid</span> | 
+        <span class="text-rose-400 font-bold">${parsedBulkRecords.length - validRecords.length} Invalid</span>
+      `;
+
+      commitBtn.disabled = validRecords.length === 0;
+
+      parsedBulkRecords.slice(0, 50).forEach(record => {
+        const row = document.createElement('tr');
+        row.className = record.isValid ? 'hover:bg-slate-800/40' : 'bg-rose-500/10';
+        row.innerHTML = `
+          <td class="p-2">${record.isValid ? '<i class="fa-solid fa-check text-emerald-400"></i>' : '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>'}</td>
+          <td class="p-2 font-semibold">${record.mfg || '--'}</td>
+          <td class="p-2">${record.model || '--'}</td>
+          <td class="p-2">${record.period || '--'}</td>
+          <td class="p-2 text-right">${isNaN(record.units) ? '--' : formatNum(record.units)}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function commitBulkImport() {
+      const validRecords = parsedBulkRecords.filter(r => r.isValid);
+      let newestPeriod = '';
+
+      validRecords.forEach(rec => {
+        if (!newestPeriod || rec.period > newestPeriod) {
+          newestPeriod = rec.period;
+        }
+
+        let existing = autoSalesData.find(item => 
+          item.mfg.toLowerCase() === rec.mfg.toLowerCase() && item.model.toLowerCase() === rec.model.toLowerCase()
+        );
+
+        if (existing) {
+          existing.sales[rec.period] = rec.units;
+        } else {
+          autoSalesData.push({
+            mfg: rec.mfg,
+            model: rec.model,
+            sales: { [rec.period]: rec.units }
+          });
+        }
+      });
+
+      savePersistedData();
+      populateMonthSelector();
+      if (newestPeriod) {
+        document.getElementById('monthSelector').value = newestPeriod;
+      }
+      closeBulkModal();
+      renderDashboard();
+      showToast(`Merged ${validRecords.length} records into dataset!`);
+    }
+
+    // Single Vehicle Analytics Logic
+    let currentVehicleData = null;
+
+    function openVehicleAnalyticsModal(targetMfg, targetModel) {
+      const vehicleDropdown = document.getElementById('vehicleSelectDropdown');
+      vehicleDropdown.innerHTML = '';
+
+      const allModels = [];
+      autoSalesData.forEach(item => {
+        allModels.push({ mfg: item.mfg, model: item.model, key: `${item.mfg} | ${item.model}` });
+      });
+
+      allModels.sort((a, b) => a.key.localeCompare(b.key));
+
+      allModels.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.key;
+        opt.textContent = `${m.mfg} - ${m.model}`;
+        vehicleDropdown.appendChild(opt);
+      });
+
+      // Populate Comparison Dropdown
+      const compareDropdown = document.getElementById('compareVehicleDropdown');
+      compareDropdown.innerHTML = `
+        <option value="none">None (Single Model)</option>
+        <option value="brand">Parent Manufacturer Total</option>
+      `;
+
+      allModels.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.key;
+        opt.textContent = `Model: ${m.mfg} ${m.model}`;
+        compareDropdown.appendChild(opt);
+      });
+
+      let selectedKey = allModels[0] ? allModels[0].key : '';
+      if (targetMfg && targetModel) {
+        selectedKey = `${targetMfg} | ${targetModel}`;
+      } else {
+        const selectedMonth = document.getElementById('monthSelector').value || '2026-09';
+        const { currentKey } = getComparisonKeys(selectedMonth);
+        const topModel = [...autoSalesData].sort((a, b) => (b.sales[currentKey] || 0) - (a.sales[currentKey] || 0))[0];
+        if (topModel) selectedKey = `${topModel.mfg} | ${topModel.model}`;
+      }
+
+      vehicleDropdown.value = selectedKey;
+      loadVehicleDeepDive(selectedKey);
+      document.getElementById('vehicleModal').classList.remove('hidden');
+    }
+
+    function closeVehicleModal() {
+      document.getElementById('vehicleModal').classList.add('hidden');
+    }
+
+    function loadVehicleDeepDive(mfgModelKey) {
+      if (!mfgModelKey) return;
+      const [mfg, model] = mfgModelKey.split(' | ').map(s => s.trim());
+      
+      const record = autoSalesData.find(item => item.mfg === mfg && item.model === model);
+      if (!record) return;
+
+      currentVehicleData = record;
+
+      document.getElementById('vehicleModalTitle').textContent = `${record.mfg} ${record.model}`;
+      document.getElementById('vehicleModalSubtitle').textContent = `Historical Multi-Year Sales Metrics`;
+      document.getElementById('vehicleModelFooterInfo').textContent = `${record.mfg} ${record.model} Analytics`;
+      document.getElementById('chartLegendPrimary').textContent = `${record.model}`;
+
+      // Calculate Timeline & Metrics
+      const allMonths = Array.from(new Set(Object.keys(record.sales))).sort();
+      let totalVol = 0;
+      let peakVol = 0;
+      let peakMonth = '--';
+      
+      allMonths.forEach(m => {
+        const v = record.sales[m] || 0;
+        totalVol += v;
+        if (v >= peakVol) {
+          peakVol = v;
+          peakMonth = m;
+        }
+      });
+
+      const avgVol = allMonths.length > 0 ? Math.round(totalVol / allMonths.length) : 0;
+      const latestMonth = allMonths[allMonths.length - 1];
+      const latestVol = record.sales[latestMonth] || 0;
+      const peakDelta = peakVol > 0 ? Math.round(((latestVol - peakVol) / peakVol) * 100) : 0;
+
+      document.getElementById('vKpiLifetime').textContent = formatNum(totalVol);
+      document.getElementById('vKpiMonthsCount').textContent = `${allMonths.length} active periods`;
+      document.getElementById('vKpiPeakVol').textContent = formatNum(peakVol);
+      
+      if (peakMonth !== '--') {
+        const d = new Date(peakMonth + '-01');
+        document.getElementById('vKpiPeakMonth').textContent = `Achieved in ${d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+      } else {
+        document.getElementById('vKpiPeakMonth').textContent = '--';
+      }
+
+      document.getElementById('vKpiAvgVol').textContent = formatNum(avgVol);
+      
+      const deltaEl = document.getElementById('vKpiPeakDelta');
+      deltaEl.textContent = `${peakDelta > 0 ? '+' : ''}${peakDelta}%`;
+      deltaEl.className = `text-lg sm:text-xl font-extrabold mt-1 ${peakDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+      // Populate Annual Breakdown Table
+      const annualTotals = {};
+      allMonths.forEach(m => {
+        const year = m.split('-')[0];
+        annualTotals[year] = (annualTotals[year] || 0) + (record.sales[m] || 0);
+      });
+
+      const sortedYears = Object.keys(annualTotals).sort();
+      const annualBody = document.getElementById('vAnnualTableBody');
+      annualBody.innerHTML = '';
+
+      sortedYears.forEach((yr, idx) => {
+        const vol = annualTotals[yr];
+        const prevYrVol = annualTotals[parseInt(yr) - 1];
+        let yoy = null;
+        if (prevYrVol) {
+          yoy = Math.round(((vol - prevYrVol) / prevYrVol) * 100);
+        }
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="p-2 font-bold text-heading">${yr}</td>
+          <td class="p-2 text-right font-mono font-semibold">${formatNum(vol)}</td>
+          <td class="p-2 text-right">${getGrowthBadge(yoy)}</td>
+        `;
+        annualBody.appendChild(row);
+      });
+
+      // Populate Monthly Breakdown Table
+      const monthlyBody = document.getElementById('vMonthlyTableBody');
+      monthlyBody.innerHTML = '';
+
+      [...allMonths].reverse().forEach(m => {
+        const { currentKey, momKey, yoyKey } = getComparisonKeys(m);
+        const metrics = calculateMetrics(record.sales, currentKey, momKey, yoyKey);
+        
+        const periodDate = new Date(m + '-01');
+        const formattedMonth = periodDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+        const row = document.createElement('tr');
+        row.className = "hover:bg-slate-800/40";
+        row.innerHTML = `
+          <td class="p-2 font-semibold text-heading">${formattedMonth}</td>
+          <td class="p-2 text-right font-bold text-heading">${formatNum(metrics.currentSales)}</td>
+          <td class="p-2 text-right">${getGrowthBadge(metrics.momGrowth)}</td>
+          <td class="p-2 text-right">${getGrowthBadge(metrics.yoyGrowth)}</td>
+        `;
+        monthlyBody.appendChild(row);
+      });
+
+      renderVehicleChart();
+    }
+
+    // Render Canvas Sales Trajectory Chart
+    function renderVehicleChart() {
+      if (!currentVehicleData) return;
+
+      const canvas = document.getElementById('vehicleTrendCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // Handle DPI scaling
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Collect all available timeline months across dataset
+      const monthSet = new Set();
+      autoSalesData.forEach(item => Object.keys(item.sales).forEach(p => monthSet.add(p)));
+      const months = Array.from(monthSet).sort();
+
+      if (months.length === 0) return;
+
+      // Extract primary vehicle series
+      const primarySeries = months.map(m => currentVehicleData.sales[m] || 0);
+
+      // Check comparison series
+      const compareChoice = document.getElementById('compareVehicleDropdown').value;
+      let compareSeries = null;
+      const legendCompareWrap = document.getElementById('chartLegendCompareWrap');
+      const legendCompareText = document.getElementById('chartLegendCompare');
+
+      if (compareChoice === 'brand') {
+        legendCompareWrap.classList.remove('hidden');
+        legendCompareText.textContent = `${currentVehicleData.mfg} Brand Total`;
+        compareSeries = months.map(m => {
+          return autoSalesData
+            .filter(i => i.mfg === currentVehicleData.mfg)
+            .reduce((sum, i) => sum + (i.sales[m] || 0), 0);
+        });
+      } else if (compareChoice !== 'none') {
+        const [cMfg, cModel] = compareChoice.split(' | ').map(s => s.trim());
+        const compRecord = autoSalesData.find(i => i.mfg === cMfg && i.model === cModel);
+        if (compRecord) {
+          legendCompareWrap.classList.remove('hidden');
+          legendCompareText.textContent = `${compRecord.model}`;
+          compareSeries = months.map(m => compRecord.sales[m] || 0);
+        } else {
+          legendCompareWrap.classList.add('hidden');
+        }
+      } else {
+        legendCompareWrap.classList.add('hidden');
+      }
+
+      // Chart Paddings
+      const padding = { top: 25, right: 20, bottom: 35, left: 50 };
+      const chartWidth = width - padding.left - padding.right;
+      const chartHeight = height - padding.top - padding.bottom;
+
+      // Find Max Value
+      let maxVal = Math.max(...primarySeries, 100);
+      if (compareSeries) {
+        maxVal = Math.max(maxVal, ...compareSeries);
+      }
+      maxVal = Math.ceil(maxVal * 1.15); // Add headroom
+
+      // Draw Grid Lines & Y-Axis Labels
+      const gridLines = 4;
+      ctx.strokeStyle = document.documentElement.classList.contains('light') ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)';
+      ctx.fillStyle = document.documentElement.classList.contains('light') ? '#64748b' : '#94a3b8';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'right';
+
+      for (let i = 0; i <= gridLines; i++) {
+        const y = padding.top + (chartHeight / gridLines) * i;
+        const val = Math.round(maxVal - (maxVal / gridLines) * i);
+        
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
+
+        ctx.fillText(formatNum(val), padding.left - 8, y + 3);
+      }
+
+      // Draw X-Axis Labels
+      const stepX = chartWidth / (months.length > 1 ? months.length - 1 : 1);
+      ctx.textAlign = 'center';
+
+      months.forEach((m, idx) => {
+        const x = padding.left + idx * stepX;
+        const d = new Date(m + '-01');
+        const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        ctx.fillText(label, x, height - 10);
+      });
+
+      // Helper function to plot line
+      function drawSeries(seriesData, strokeColor, fillColor, isDashed = false) {
+        if (seriesData.length === 0) return;
+
+        const points = seriesData.map((val, idx) => ({
+          x: padding.left + (months.length > 1 ? idx * stepX : chartWidth / 2),
+          y: padding.top + chartHeight - (val / maxVal) * chartHeight,
+          val: val
+        }));
+
+        // Gradient Fill
+        if (fillColor) {
+          const grad = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+          grad.addColorStop(0, fillColor);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, height - padding.bottom);
+          points.forEach(p => ctx.lineTo(p.x, p.y));
+          ctx.lineTo(points[points.length - 1].x, height - padding.bottom);
+          ctx.closePath();
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        // Line
+        ctx.beginPath();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 3;
+        if (isDashed) ctx.setLineDash([5, 5]);
+        else ctx.setLineDash([]);
+
+        points.forEach((p, idx) => {
+          if (idx === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Points & Data Labels
+        points.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = strokeColor;
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#0f172a';
+          ctx.stroke();
+
+          // Value Tag
+          ctx.fillStyle = document.documentElement.classList.contains('light') ? '#0f172a' : '#f8fafc';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(formatNum(p.val), p.x, p.y - 8);
+        });
+      }
+
+      // Draw Comparison Series First (if any)
+      if (compareSeries) {
+        drawSeries(compareSeries, '#f59e0b', 'rgba(245, 158, 11, 0.15)', true);
+      }
+
+      // Draw Primary Series
+      drawSeries(primarySeries, '#a855f7', 'rgba(168, 85, 247, 0.25)', false);
+    }
+
+    // Handle Window Resize for Canvas Redraw
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('vehicleModal').classList.contains('hidden')) {
+        renderVehicleChart();
+      }
+    });
+
+    // JSON Dataset Export
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(autoSalesData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `auto_sales_data_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Sales dataset exported to JSON!");
+    }
+
+    // Toast Helper
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+
+    // Drag and Drop Event Setup
+    const dropZone = document.getElementById('dropZone');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        handleFileSelect({ target: { files: files } });
+      }
+    });
+
+    // App Initialization
+    window.onload = function() {
+      initTheme();
+      loadPersistedData();
+      populateMonthSelector();
+      renderDashboard();
+    };
+  </script>
+</body>
+</html>
