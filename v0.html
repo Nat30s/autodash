@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AutoDash – Live v0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:Inter,system-ui,sans-serif;background:#fafafa}
+html.dark body{background:#0a0a0a}
+.num{font-variant-numeric:tabular-nums}
+.b2{border:1px solid #e5e5e5;border-radius:.5rem;padding:.4rem .75rem;font-size:.875rem}.b2:hover{background:#f5f5f5}
+html.dark .b2{border-color:#404040}html.dark .b2:hover{background:#262626}
+.sl{border:1px solid #e5e5e5;border-radius:.5rem;padding:.5rem .6rem;font-size:.875rem;width:100%;margin-top:.25rem;background:#fff;text-transform:none;font-weight:400;letter-spacing:0;color:inherit}
+html.dark .sl{background:#171717;border-color:#404040}
+.card{border:1px solid #e5e5e5;border-radius:1rem;background:#fff}html.dark .card{background:#171717;border-color:#262626}
+.b2{cursor:pointer}.pb{background:#171717;color:#fff;border-radius:.5rem;padding:.45rem .9rem;font-size:.875rem;font-weight:600;cursor:pointer}html.dark .pb{background:#fff;color:#171717}.pb:disabled{opacity:.4;cursor:not-allowed}
+.sl.chg{border-color:#3b82f6}.sl.warn{border-color:#f59e0b;background:#fffbeb}html.dark .sl.warn{background:#2a2108}.sl.bad{border-color:#e11d48;background:#fff1f2}html.dark .sl.bad{background:#2a0d14}
+.th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#737373;background:#fafafa;border-bottom:1px solid #e5e5e5}html.dark .th{background:#0a0a0a99;border-color:#262626}
+.pill{display:inline-block;padding:.1rem .55rem;border-radius:9999px;font-size:.7rem;font-weight:600}
+</style>
+</head>
+<body class="text-neutral-800 dark:text-neutral-200 antialiased">
+
+<header class="sticky top-0 z-20 bg-white/90 dark:bg-neutral-950/90 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-6">
+      <div id="brand" class="font-bold tracking-tight text-neutral-900 dark:text-white cursor-pointer">AutoDash <span class="ml-1 text-xs px-2 py-0.5 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold align-middle">Live v0</span></div>
+      <nav class="flex gap-1 text-sm font-medium">
+        <button data-view="home" class="navbtn px-3 py-1.5 rounded-lg">Home</button>
+        <button data-view="dash" class="navbtn px-3 py-1.5 rounded-lg">All models</button>
+        <button data-view="compare" class="navbtn px-3 py-1.5 rounded-lg">Compare</button>
+        <button data-view="build" class="navbtn px-3 py-1.5 rounded-lg">Builder</button>
+      </nav>
+    </div>
+    <div class="flex items-center gap-2">
+      <select id="month" class="text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-2.5 py-1.5"></select>
+      <button id="theme" class="w-9 h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<div id="empty" class="hidden max-w-6xl mx-auto px-4 pt-6"><div class="card p-6 text-center space-y-3"><p id="emptyMsg" class="text-sm text-neutral-500">Loading data/data.json…</p><div class="flex justify-center gap-2"><button data-act="load" class="pb">Load data.json file</button><button data-act="startEmpty" class="b2">Start empty</button></div></div></div>
+
+<!-- ============ HOME ============ -->
+<main id="home" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <section class="card p-6 sm:p-8 space-y-3">
+    <div class="flex items-center justify-between gap-3">
+      <div id="hLab" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Monthly snapshot</div>
+      <button id="hCust" class="b2">⚙ Customize</button>
+    </div>
+    <h1 id="hHead" class="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white"></h1>
+    <p id="hSub" class="text-neutral-500 max-w-2xl"></p>
+    <div class="flex flex-col sm:flex-row gap-2 pt-2">
+      <input id="hSearch" list="hList" placeholder="Jump to a model, e.g. Swift…" class="sl !mt-0 sm:w-80"><datalist id="hList"></datalist>
+      <button id="hGoCmp" class="b2">Compare models</button><button id="hGoTbl" class="b2">Browse full table</button>
+    </div>
+  </section>
+  <div id="hSec" class="grid lg:grid-cols-2 gap-4"></div>
+</main>
+<div id="cPanel" class="hidden fixed inset-0 z-30">
+  <div id="cBg" class="absolute inset-0 bg-black/30"></div>
+  <aside class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 p-5 overflow-y-auto space-y-4">
+    <div class="flex items-center justify-between"><h2 class="font-bold text-neutral-900 dark:text-white">Customize Home</h2><button id="cClose" class="b2">Done</button></div>
+    <div class="flex gap-2"><button data-pre="compact" class="b2 pre">Compact</button><button data-pre="full" class="b2 pre">Full</button><button data-pre="reset" class="b2 pre">Reset</button></div>
+    <div id="cList" class="divide-y divide-neutral-200 dark:divide-neutral-800"></div>
+    <p class="text-xs text-neutral-500">Show or hide sections and change their order. Saved in this browser.</p>
+  </aside>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<main id="dash" class="max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div class="flex items-end justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-neutral-900 dark:text-white">Car sales overview</h1>
+      <p class="text-sm text-neutral-500">Source: data/data.json · updated <span id="upd"></span><span id="dNote"></span></p>
+    </div>
+    
+  </div>
+
+  <div id="kpis" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+  <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+    <input id="q" placeholder="Search manufacturer or model…" class="w-full sm:w-80 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-transparent px-3 py-2">
+    <div class="flex items-center gap-2 text-xs">
+      <button id="colAll" class="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800">Collapse all</button>
+      <button id="expAll" class="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800">Expand all</button>
+      <span id="cnt" class="text-neutral-500 pl-2"></span>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800">
+          <tr>
+            <th class="text-left px-4 py-3">Manufacturer / Model</th>
+            <th class="text-right px-4 py-3" id="hCur"></th>
+            <th class="text-right px-4 py-3" id="hYoy"></th>
+            <th class="text-right px-4 py-3">YoY</th>
+            <th class="text-right px-4 py-3" id="hMom"></th>
+            <th class="text-right px-4 py-3">MoM</th>
+            <th class="text-right px-4 py-3">Share</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-xs text-neutral-500">Click a model to open its own page. “–” means no data, which is different from 0 sales.</p>
+</main>
+
+<!-- ============ VEHICLE ============ -->
+<main id="vehicle" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div><button id="vBack" class="text-sm text-neutral-500 hover:underline">← Back</button>
+      <h1 id="vTitle" class="text-xl font-bold text-neutral-900 dark:text-white mt-1"></h1></div>
+    <div class="flex items-center gap-2">
+      <button id="vPrev" class="b2">←</button>
+      <select id="vSel" class="sl !w-auto !mt-0"></select>
+      <button id="vNext" class="b2">→</button>
+      <button id="vCmp" class="px-3 py-2 text-sm rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold">Compare this model</button>
+    </div>
+  </div>
+  <div id="vKpi" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+  <div class="card p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Sales by month</h2>
+      <div class="flex gap-1 text-xs"><button data-vt="matrix" class="vt b2">Year × month</button><button data-vt="list" class="vt b2">Month list</button></div>
+    </div>
+    <div id="vTable" class="overflow-x-auto"></div>
+  </div>
+  <div class="card p-4"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Monthly trend</h2><div id="vChart"></div></div>
+</main>
+
+<!-- ============ COMPARE ============ -->
+<main id="compare" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div>
+    <h1 class="text-xl font-bold text-neutral-900 dark:text-white">Compare models</h1>
+    <p class="text-sm text-neutral-500">Pick up to 6 models or brands, then compare by month, quarter, half-year or year.</p>
+  </div>
+  <div class="card p-4 space-y-4">
+    <div class="flex flex-wrap items-center gap-2"><div id="cChips" class="flex flex-wrap gap-2"></div><select id="cAdd" class="sl !w-auto !mt-0"></select></div>
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+      <label>Group by<select id="cGroup" class="sl"><option value="m">Monthly</option><option value="q" selected>Quarterly</option><option value="h">Half-yearly</option><option value="y">Yearly</option></select></label>
+      <label>Year type<select id="cFy" class="sl"><option value="1" selected>Financial (Apr–Mar)</option><option value="0">Calendar</option></select></label>
+      <label>From<select id="cFrom" class="sl"></select></label>
+      <label>To<select id="cTo" class="sl"></select></label>
+      <label>Metric<select id="cMetric" class="sl"><option value="units">Units</option><option value="share">Share %</option><option value="growth">Growth %</option></select></label>
+      <div class="flex items-end gap-2"><button id="cFlip" class="b2 w-full">Flip</button><button id="cCsv" class="b2 w-full">Copy CSV</button></div>
+    </div>
+  </div>
+  <div id="cTable" class="card overflow-x-auto"></div>
+  <p class="text-xs text-neutral-500">* partial period (fewer months of data than the period holds). Highlighted cell = best in that period. Growth is only shown between periods with the same number of months.</p>
+  <div class="card p-4"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Trend</h2><div id="cChart"></div></div>
+</main>
+
+<!-- ============ BUILDER ============ -->
+<main id="build" class="hidden max-w-6xl mx-auto px-4 py-6"><div id="bApp"><div class="card p-8 text-center space-y-4 max-w-2xl mx-auto"><h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Data builder</h1><p class="text-sm text-neutral-500">Load your <code>data.json</code> or start empty, then add or import months and download the updated file.</p><div class="flex justify-center gap-2"><button data-act="load" class="pb">Load data.json file</button><button data-act="startEmpty" class="b2">Start empty</button></div></div></div></main>
+<input type="file" id="fLoad" accept=".json,.txt" class="hidden"><input type="file" id="fImp" accept=".csv,.json,.txt,.tsv" class="hidden">
+<div id="modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4"><div data-act="closeModal" class="absolute inset-0 bg-black/40"></div>
+  <div class="card relative w-full max-w-lg p-5 space-y-3 max-h-[85vh] overflow-y-auto"><div class="flex items-center justify-between"><h2 id="mTitle" class="font-bold text-neutral-900 dark:text-white"></h2><button data-act="closeModal" class="b2">✕</button></div><div id="mBody"></div></div></div>
+<div id="toast" class="hidden"></div>
+
+
+<script>
+let DATA={schemaVersion:1,lastUpdated:'–',vehicles:[],sales:{}},VMAP={},ALLM=[];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>new Intl.NumberFormat('en-IN').format(n);
+const mlabel=(k,long)=>new Date(k+'-01T00:00:00').toLocaleDateString('en-US',{month:'short',year:long?'numeric':'2-digit'});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const growth=(c,p)=>(c==null||p==null||p===0)?null:Math.round((c-p)/p*100);
+const pill=g=>g==null?'<span class="text-neutral-400">–</span>':
+ `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${g>0?'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400':g<0?'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400':'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'}">${g>0?'+':''}${g}%</span>`;
+const prevKeys=m=>{const[y,mo]=m.split('-').map(Number);return{mom:mo===1?`${y-1}-12`:`${y}-${String(mo-1).padStart(2,'0')}`,yoy:`${y-1}-${String(mo).padStart(2,'0')}`}};
+
+// ---- Theme ----
+function setTheme(t){document.documentElement.classList.toggle('dark',t==='dark');try{localStorage.setItem('ap_theme',t)}catch(e){}}
+try{setTheme(localStorage.getItem('ap_theme')||'light')}catch(e){}
+$('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('dark')?'light':'dark');
+
+// ---- View + tab switching ----
+let cur='home',backTo='home';
+function show(v,keep){if(v==='vehicle'&&cur!=='vehicle')backTo=cur;cur=v;['home','dash','vehicle','compare','build'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==v||(!ALLM.length&&x!=='build')));$('#empty').classList.toggle('hidden',!(!ALLM.length&&v!=='build'));const nv=v==='vehicle'?'dash':v;
+ $$('.navbtn').forEach(b=>b.className='navbtn px-3 py-1.5 rounded-lg '+(b.dataset.view===nv?'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900':'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'));
+ $('#month').classList.toggle('hidden',v!=='dash'&&v!=='home');if(!keep)window.scrollTo(0,0)}
+$$('.navbtn').forEach(b=>b.onclick=()=>show(b.dataset.view));
+
+// ---- Dashboard ----
+const collapsed={};
+function render(){
+ if(!ALLM.length)return;
+ const m=curMonth(),{mom,yoy}=prevKeys(m),q=$('#q').value.toLowerCase().trim();
+ $('#dNote').textContent=$('#month').value.includes(':')?' · table shows the latest month of the selected year':'';$('#hCur').textContent=mlabel(m)+' vol';$('#hMom').textContent=mlabel(mom)+' vol';$('#hYoy').textContent=mlabel(yoy)+' vol';
+ const g={};let T=0,TY=0,TM=0,models=[];
+ DATA.vehicles.filter(v=>(v.mfg+' '+v.model).toLowerCase().includes(q)).forEach(v=>{
+  const c=DATA.sales[m]?.[v.id],y=DATA.sales[yoy]?.[v.id],p=DATA.sales[mom]?.[v.id];
+  const r={...v,c,y,p,gy:growth(c,y),gm:growth(c,p)};models.push(r);
+  T+=c||0;TY+=y||0;TM+=p||0;
+  const o=g[v.mfg]??(g[v.mfg]={name:v.mfg,c:0,y:0,p:0,list:[]});o.c+=c||0;o.y+=y||0;o.p+=p||0;o.list.push(r)});
+ const groups=Object.values(g).sort((a,b)=>b.c-a.c);
+ const top=groups[0],tg=models.filter(x=>x.c>=500&&x.gy!=null).sort((a,b)=>b.gy-a.gy)[0];
+ const card=(l,v,s)=>`<div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4"><div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">${l}</div><div class="text-2xl font-bold mt-2 text-neutral-900 dark:text-white num truncate">${v}</div><div class="mt-1 text-xs text-neutral-500 flex items-center gap-2">${s}</div></div>`;
+ $('#kpis').innerHTML=card('Industry sales',fmt(T),pill(growth(T,TY))+' vs last year')+
+  card('Top manufacturer',top?esc(top.name):'–',top?`${fmt(top.c)} units · ${(top.c/T*100).toFixed(1)}%`:'')+
+  card('Top growth model',tg?esc(tg.model):'–',tg?pill(tg.gy)+' '+esc(tg.mfg)+' (≥500 units)':'')+
+  card('Month on month',fmt(T),pill(growth(T,TM))+' vs prev. month');
+ $('#cnt').textContent=models.length+' models';
+ $('#rows').innerHTML=groups.map(o=>{
+  const col=collapsed[o.name],sh=T?(o.c/T*100).toFixed(1):'0.0';
+  let h=`<tr class="bg-neutral-50 dark:bg-neutral-950/50 font-semibold cursor-pointer border-t border-neutral-200 dark:border-neutral-800" data-m="${esc(o.name)}">
+   <td class="px-4 py-3"><span class="inline-block w-4 text-neutral-400">${col?'▸':'▾'}</span>${esc(o.name)} <span class="ml-1 text-xs font-normal px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">${o.list.length} models</span></td>
+   <td class="px-4 py-3 text-right num">${fmt(o.c)}</td><td class="px-4 py-3 text-right num text-neutral-500">${fmt(o.y)}</td><td class="px-4 py-3 text-right">${pill(growth(o.c,o.y))}</td>
+   <td class="px-4 py-3 text-right num text-neutral-500">${fmt(o.p)}</td><td class="px-4 py-3 text-right">${pill(growth(o.c,o.p))}</td><td class="px-4 py-3 text-right num">${sh}%</td></tr>`;
+  if(!col)h+=o.list.sort((a,b)=>(b.c||0)-(a.c||0)).map(r=>`<tr data-v="${r.id}" class="cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/40 border-t border-neutral-100 dark:border-neutral-800">
+   <td class="pl-11 pr-4 py-2.5 font-medium">${esc(r.model)} <span class="text-neutral-400 text-xs">→</span></td>
+   <td class="px-4 py-2.5 text-right num font-semibold">${r.c==null?'–':fmt(r.c)}</td><td class="px-4 py-2.5 text-right num text-neutral-500">${r.y==null?'–':fmt(r.y)}</td><td class="px-4 py-2.5 text-right">${pill(r.gy)}</td>
+   <td class="px-4 py-2.5 text-right num text-neutral-500">${r.p==null?'–':fmt(r.p)}</td><td class="px-4 py-2.5 text-right">${pill(r.gm)}</td>
+   <td class="px-4 py-2.5 text-right num text-neutral-500 text-xs">${T&&r.c?(r.c/T*100).toFixed(1):'0.0'}%</td></tr>`).join('');
+  return h}).join('')||'<tr><td colspan="7" class="text-center py-10 text-neutral-500">No models match.</td></tr>';
+ $$('#rows tr[data-m]').forEach(tr=>tr.onclick=()=>{collapsed[tr.dataset.m]=!collapsed[tr.dataset.m];render()});
+ $$('#rows tr[data-v]').forEach(tr=>tr.onclick=()=>openVehicle(tr.dataset.v));
+}
+function buildMonthSelect(){const months=Object.keys(DATA.sales).sort().reverse(),prev=$('#month').value;{const cy=[...new Set(months.map(k=>k.slice(0,4)))],fy=[...new Set(months.map(k=>+k.slice(0,4)+(+k.slice(5)>=4?1:0)))],cnt=n=>n>=12?'full year':n+' months';
+ $('#month').innerHTML='<optgroup label="Month">'+months.map(k=>`<option value="${k}">${mlabel(k,1)}</option>`).join('')+'</optgroup><optgroup label="Full year">'+
+  cy.map(y=>`<option value="cy:${y}">Calendar ${y} (${cnt(months.filter(k=>k.startsWith(y)).length)})</option>`).join('')+
+  fy.map(Y=>`<option value="fy:${String(Y).slice(2)}">FY${String(Y).slice(2)} Apr–Mar (${cnt(months.filter(k=>k>=(Y-1)+'-04'&&k<=Y+'-03').length)})</option>`).join('')+'</optgroup>'}if(prev&&[...$('#month').options].some(o=>o.value===prev))$('#month').value=prev}
+$('#month').onchange=()=>{render();renderHome()};$('#q').oninput=render;
+$('#colAll').onclick=()=>{DATA.vehicles.forEach(v=>collapsed[v.mfg]=true);render()};
+$('#expAll').onclick=()=>{Object.keys(collapsed).forEach(k=>collapsed[k]=false);render()};
+
+// ---- Shared helpers for new views ----
+const val=(id,m)=>DATA.sales[m]?.[id];
+const sumM=(id,ms)=>{let s=null;ms.forEach(m=>{const v=val(id,m);if(v!=null)s=(s||0)+v});return s};
+const COL=['currentColor','#2563eb','#059669','#d97706','#9333ea','#e11d48'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function lineSVG(labels,series,f){
+ const W=720,H=230,p={l:50,r:14,t:12,b:26},all=series.flatMap(s=>s.vals).filter(v=>v!=null);
+ if(!all.length)return'<p class="text-sm text-neutral-500">No data in range.</p>';
+ const mx=Math.max(...all)*1.1||1,mn=Math.min(0,...all),y=v=>p.t+(H-p.t-p.b)*(1-(v-mn)/(mx-mn)),x=i=>p.l+(W-p.l-p.r)*(labels.length>1?i/(labels.length-1):.5);
+ let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" opacity=".1"/><text x="${p.l-6}" y="${y(v)+3}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">${f(v)}</text>`}
+ const st=Math.ceil(labels.length/8);labels.forEach((l,i)=>{if(i%st===0)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">${l}</text>`});
+ series.forEach(s=>{let d='',open=false;s.vals.forEach((v,i)=>{if(v==null){open=false;return}d+=(open?'L':'M')+x(i)+' '+y(v);open=true;g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="${s.color}"/>`});g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.2"/>`});
+ return`<svg viewBox="0 0 ${W} ${H}" class="w-full text-neutral-900 dark:text-white">${g}</svg><div class="flex flex-wrap gap-4 text-xs text-neutral-500 mt-2">${series.map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full text-neutral-900 dark:text-white" style="background:${s.color}"></span>${esc(s.name)}</span>`).join('')}</div>`}
+const kcard=(l,v,s)=>`<div class="card p-4"><div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">${l}</div><div class="text-2xl font-bold mt-2 text-neutral-900 dark:text-white num truncate">${v}</div><div class="mt-1 text-xs text-neutral-500">${s}</div></div>`;
+
+// ---- Vehicle page ----
+let curV=null,vTab='matrix';
+function openVehicle(id){curV=id;show('vehicle');renderVehicle()}
+function renderVehicle(){
+ if(!VMAP[curV]&&DATA.vehicles.length)curV=DATA.vehicles[0].id;if(!VMAP[curV])return;
+ const v=VMAP[curV],ms=ALLM.filter(m=>val(curV,m)!=null),vals=ms.map(m=>val(curV,m));
+ $('#vTitle').textContent=v.mfg+' '+v.model;
+ $('#vSel').innerHTML=DATA.vehicles.map(x=>`<option value="${x.id}" ${x.id===curV?'selected':''}>${esc(x.mfg)} – ${esc(x.model)}</option>`).join('');
+ if(!ms.length){$('#vKpi').innerHTML='';$('#vTable').innerHTML='<p class="text-sm text-neutral-500">No sales data for this model yet.</p>';$('#vChart').innerHTML='';return}
+ const tot=vals.reduce((a,b)=>a+b,0),pk=Math.max(...vals),pm=ms[vals.indexOf(pk)],last=vals[vals.length-1];
+ $('#vKpi').innerHTML=kcard('Total tracked',fmt(tot),ms.length+' months of data')+kcard('Best month',fmt(pk),mlabel(pm,1))+kcard('Monthly average',fmt(Math.round(tot/ms.length)),'units / month')+kcard('Latest vs peak',pill(growth(last,pk)),mlabel(ms[ms.length-1],1));
+ $$('.vt').forEach(b=>b.className='vt b2 '+(b.dataset.vt===vTab?'!bg-neutral-900 !text-white dark:!bg-white dark:!text-neutral-900':''));
+ const th='text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800';
+ if(vTab==='matrix'){
+  const ys=[...new Set(ms.map(m=>m.slice(0,4)))];
+  let h=`<table class="w-full text-sm"><thead class="${th}"><tr><th class="text-left px-3 py-3">Year</th>${MN.map(n=>`<th class="text-right px-3 py-3">${n}</th>`).join('')}<th class="text-right px-3 py-3">Total</th><th class="text-right px-3 py-3" title="Compares matching months only">YoY</th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">`;
+  ys.forEach(y=>{let t=0,n=0,c=0,p=0;
+   const cells=MN.map((_,i)=>{const k=y+'-'+String(i+1).padStart(2,'0'),x=val(curV,k);if(x==null)return'<td class="px-3 py-2.5 text-right text-neutral-400">–</td>';
+    t+=x;n++;const pv=val(curV,(y-1)+'-'+String(i+1).padStart(2,'0'));if(pv!=null){c+=x;p+=pv}
+    return`<td class="px-3 py-2.5 text-right num" style="background:rgba(16,185,129,${(x/pk*.3).toFixed(2)})">${fmt(x)}</td>`}).join('');
+   h+=`<tr><td class="px-3 py-2.5 font-bold">${y}</td>${cells}<td class="px-3 py-2.5 text-right num font-bold">${fmt(t)}${n<12?'<span class="text-neutral-400" title="Partial year">*</span>':''}</td><td class="px-3 py-2.5 text-right">${pill(growth(c,p||null))}</td></tr>`});
+  $('#vTable').innerHTML=h+'</tbody></table><p class="text-xs text-neutral-500 mt-2">* partial year · YoY compares only months present in both years · shading = share of best month</p>';
+ }else{
+  let h=`<div class="max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="${th} sticky top-0 bg-white dark:bg-neutral-900"><tr><th class="text-left px-4 py-3">Month</th><th class="text-right px-4 py-3">Units</th><th class="text-right px-4 py-3">MoM</th><th class="text-right px-4 py-3">YoY</th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">`;
+  [...ms].reverse().forEach(m=>{const k=prevKeys(m),c=val(curV,m);h+=`<tr><td class="px-4 py-2.5 font-medium">${mlabel(m,1)}</td><td class="px-4 py-2.5 text-right num font-semibold">${fmt(c)}</td><td class="px-4 py-2.5 text-right">${pill(growth(c,val(curV,k.mom)))}</td><td class="px-4 py-2.5 text-right">${pill(growth(c,val(curV,k.yoy)))}</td></tr>`});
+  $('#vTable').innerHTML=h+'</tbody></table></div>';
+ }
+ $('#vChart').innerHTML=lineSVG(ms.map(m=>mlabel(m)),[{name:v.model,vals,color:COL[0]}],n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n));
+}
+$$('.vt').forEach(b=>b.onclick=()=>{vTab=b.dataset.vt;renderVehicle()});
+$('#vBack').onclick=()=>show(backTo);
+$('#vSel').onchange=e=>{curV=e.target.value;renderVehicle()};
+const step=d=>{const i=DATA.vehicles.findIndex(v=>v.id===curV);curV=DATA.vehicles[(i+d+DATA.vehicles.length)%DATA.vehicles.length].id;renderVehicle()};
+$('#vPrev').onclick=()=>step(-1);$('#vNext').onclick=()=>step(1);
+$('#vCmp').onclick=()=>{C.items=[curV,...DATA.vehicles.filter(v=>v.id!==curV).sort((a,b)=>(val(b.id,ALLM[ALLM.length-1])||0)-(val(a.id,ALLM[ALLM.length-1])||0)).slice(0,2).map(v=>v.id)];show('compare');renderCompare()};
+
+// ---- Compare view ----
+const C={items:[],group:'q',fy:true,from:'',to:'',metric:'units',flip:false};
+const itemIds=it=>it.startsWith('b:')?DATA.vehicles.filter(v=>v.mfg===it.slice(2)).map(v=>v.id):[it];
+const itemLabel=it=>it.startsWith('b:')?it.slice(2)+' (all)':VMAP[it].model;
+function bucket(m){const y=+m.slice(0,4),mo=+m.slice(5),Y=C.fy?(mo>=4?y+1:y):y,yl=C.fy?'FY'+String(Y).slice(2):''+Y,ix=C.fy?(mo>=4?mo-4:mo+8):mo-1;
+ if(C.group==='m')return{k:m,l:mlabel(m),n:1};
+ if(C.group==='q'){const q=Math.floor(ix/3)+1;return{k:Y+'-'+q,l:`Q${q} ${yl}`,n:3}}
+ if(C.group==='h'){const h=Math.floor(ix/6)+1;return{k:Y+'-'+h,l:`H${h} ${yl}`,n:6}}
+ return{k:''+Y,l:yl,n:12}}
+function renderCompare(){
+ if(!ALLM.length)return;
+ $('#cChips').innerHTML=C.items.map((it,i)=>`<span class="inline-flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-700 px-3 py-1 text-sm"><span class="w-2 h-2 rounded-full text-neutral-900 dark:text-white" style="background:${COL[i]}"></span>${esc(itemLabel(it))}<button data-rm="${i}" class="text-neutral-400 hover:text-rose-600">×</button></span>`).join('');
+ const brands=[...new Set(DATA.vehicles.map(v=>v.mfg))];
+ $('#cAdd').innerHTML='<option value="">+ Add model or brand…</option><optgroup label="Models">'+DATA.vehicles.filter(v=>!C.items.includes(v.id)).map(v=>`<option value="${v.id}">${esc(v.mfg)} ${esc(v.model)}</option>`).join('')+'</optgroup><optgroup label="Brands (all models)">'+brands.filter(b=>!C.items.includes('b:'+b)).map(b=>`<option value="b:${esc(b)}">${esc(b)} (all)</option>`).join('')+'</optgroup>';
+ $$('[data-rm]').forEach(b=>b.onclick=()=>{C.items.splice(+b.dataset.rm,1);renderCompare()});
+ const B=new Map();ALLM.filter(m=>m>=C.from&&m<=C.to).forEach(m=>{const b=bucket(m);if(!B.has(b.k))B.set(b.k,{...b,ms:[]});B.get(b.k).ms.push(m)});
+ const rows=[...B.values()];
+ const U=rows.map(r=>C.items.map(it=>{let s=null;itemIds(it).forEach(id=>{const x=sumM(id,r.ms);if(x!=null)s=(s||0)+x});return s}));
+ const T=rows.map(r=>DATA.vehicles.reduce((a,v)=>a+(sumM(v.id,r.ms)||0),0));
+ const G=rows.map((r,p)=>C.items.map((it,i)=>{const u=U[p][i];return C.metric==='units'?u:C.metric==='share'?(u==null||!T[p]?null:+(u/T[p]*100).toFixed(1)):(p&&rows[p].ms.length===rows[p-1].ms.length?growth(u,U[p-1][i]):null)}));
+ const units=C.metric==='units',sv=v=>v==null?'<span class="text-neutral-400">–</span>':units?fmt(v):C.metric==='share'?v+'%':pill(v);
+ const isBest=(p,i)=>{const a=G[p].filter(x=>x!=null);return G[p][i]!=null&&a.length>1&&G[p][i]===Math.max(...a)};
+ const cell=(p,i)=>`<td class="px-4 py-2.5 text-right num ${isBest(p,i)?'font-bold bg-neutral-100 dark:bg-neutral-800':''}">${sv(G[p][i])}</td>`;
+ const rl=rows.map(r=>esc(r.l)+(r.ms.length<r.n?`<span class="text-neutral-400" title="${r.ms.length} of ${r.n} months">*</span>`:'')),il=C.items.map(it=>esc(itemLabel(it)));
+ const sm=a=>a.reduce((x,y)=>x+(y||0),0),tdm='px-4 py-2.5 text-right num text-neutral-500';
+ let h=`<table class="w-full text-sm"><thead class="text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800"><tr><th class="text-left px-4 py-3">${C.flip?'Model':'Period'}</th>${(C.flip?rl:il).map(x=>`<th class="text-right px-4 py-3">${x}</th>`).join('')}${units?'<th class="text-right px-4 py-3">Total</th>':''}</tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">`;
+ if(!C.flip)rows.forEach((r,p)=>h+=`<tr><td class="px-4 py-2.5 font-medium">${rl[p]}</td>${C.items.map((_,i)=>cell(p,i)).join('')}${units?`<td class="${tdm}">${fmt(sm(G[p]))}</td>`:''}</tr>`);
+ else C.items.forEach((_,i)=>h+=`<tr><td class="px-4 py-2.5 font-medium">${il[i]}</td>${rows.map((r,p)=>cell(p,i)).join('')}${units?`<td class="${tdm}">${fmt(sm(G.map(x=>x[i])))}</td>`:''}</tr>`);
+ if(units)h+=`<tr class="font-semibold bg-neutral-50 dark:bg-neutral-950/50"><td class="px-4 py-3">Total</td>${(C.flip?G.map(x=>sm(x)):C.items.map((_,i)=>sm(G.map(x=>x[i])))).map(x=>`<td class="px-4 py-3 text-right num">${fmt(x)}</td>`).join('')}<td class="px-4 py-3 text-right num">${fmt(sm(G.map(x=>sm(x))))}</td></tr>`;
+ $('#cTable').innerHTML=rows.length&&C.items.length?h+'</tbody></table>':'<p class="p-8 text-center text-sm text-neutral-500">Add at least one model and a valid date range.</p>';
+ const f=units?n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n):n=>Math.round(n)+'%';
+ $('#cChart').innerHTML=rows.length?lineSVG(rows.map(r=>r.l),C.items.map((it,i)=>({name:itemLabel(it),vals:G.map(x=>x[i]),color:COL[i]})),f):'';
+}
+function initCompare(){
+ 
+ $('#cAdd').onchange=e=>{if(e.target.value&&C.items.length<6){C.items.push(e.target.value)}renderCompare()};
+ $('#cGroup').onchange=e=>{C.group=e.target.value;renderCompare()};$('#cFy').onchange=e=>{C.fy=e.target.value==='1';renderCompare()};
+ $('#cFrom').onchange=e=>{C.from=e.target.value;renderCompare()};$('#cTo').onchange=e=>{C.to=e.target.value;renderCompare()};
+ $('#cMetric').onchange=e=>{C.metric=e.target.value;renderCompare()};$('#cFlip').onclick=()=>{C.flip=!C.flip;renderCompare()};
+ $('#cCsv').onclick=()=>{const t=$('#cTable').innerText.trim().split('\n').map(r=>r.trim().replace(/\t+/g,',')).join('\n');try{navigator.clipboard.writeText(t);$('#cCsv').textContent='Copied ✓'}catch(e){$('#cCsv').textContent='Copy failed'}setTimeout(()=>$('#cCsv').textContent='Copy CSV',1500)}}
+
+// ---- Home view ----
+const SHC=['#525252','#2563eb','#059669','#d97706','#9333ea','#e11d48','#a3a3a3'];
+const prevY=m=>(+m.slice(0,4)-1)+m.slice(4);
+function period(v){
+ if(v.startsWith('cy:')){const y=v.slice(3);return{label:'calendar year '+y,ms:ALLM.filter(m=>m.slice(0,4)===y),n:12,year:true}}
+ if(v.startsWith('fy:')){const yy=+v.slice(3),Y=2000+yy;return{label:'FY'+yy+' (Apr '+(Y-1)+' – Mar '+Y+')',ms:ALLM.filter(m=>m>=(Y-1)+'-04'&&m<=Y+'-03'),n:12,year:true}}
+ return{label:mlabel(v,1),ms:[v],n:1,year:false}}
+const curMonth=()=>{const v=$('#month').value;return v.includes(':')?period(v).ms.slice(-1)[0]:v};
+// ---- Home sections (customizable) ----
+const HS_KEY='ap_home_v1e',SECS=[
+ {id:'kpi',t:'Key numbers',w:2,bare:1},{id:'fy',t:'Financial year summary',w:2},{id:'top',t:'Top 10 models'},{id:'brand',t:'Market share by brand'},
+ {id:'shift',t:'Share shift by brand',sub:'(vs same period last year)'},{id:'rank',t:'Rank movers',sub:'(vs last year)'},
+ {id:'up',t:'Biggest gainers',sub:'(YoY, minimum volume)'},{id:'down',t:'Biggest decliners',sub:'(YoY, minimum volume)'},
+ {id:'new',t:'New and discontinued'},{id:'rec',t:'Records'},{id:'trend',t:'Industry sales trend',w:2},
+ {id:'stack',t:'Sales by brand over time',w:2},{id:'heat',t:'Seasonality heatmap',sub:'(industry units by month)',w:2}];
+let HS={order:SECS.map(s=>s.id),hidden:{}};
+try{const x=JSON.parse(localStorage.getItem(HS_KEY));if(x&&Array.isArray(x.order)){HS.hidden=x.hidden||{};HS.order=[...x.order.filter(i=>SECS.some(s=>s.id===i)),...SECS.map(s=>s.id).filter(i=>!x.order.includes(i))]}}catch(e){}
+const saveHS=()=>{try{localStorage.setItem(HS_KEY,JSON.stringify(HS))}catch(e){}};
+const none=t=>`<p class="text-sm text-neutral-500">${t}</p>`,kfmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n);
+const spark=id=>{const vs=ALLM.map(x=>val(id,x)).filter(v=>v!=null).slice(-12);if(vs.length<2)return'';const mx=Math.max(...vs),mn=Math.min(...vs),r=mx-mn||1;return`<svg viewBox="0 0 60 18" class="w-14 h-4 text-neutral-400 hidden sm:block shrink-0"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="${vs.map((v,i)=>(i/(vs.length-1)*58+1).toFixed(1)+','+(16-(v-mn)/r*14).toFixed(1)).join(' ')}"/></svg>`};
+function stackSVG(labels,series){
+ const W=720,H=240,p={l:50,r:12,t:12,b:26},n=labels.length,tot=labels.map((_,i)=>series.reduce((a,s)=>a+(s.vals[i]||0),0)),mx=Math.max(...tot,1)*1.08,y=v=>p.t+(H-p.t-p.b)*(1-v/mx),bw=(W-p.l-p.r)/n*.68,x=i=>p.l+(W-p.l-p.r)*(i+.5)/n;let g='';
+ for(let k=0;k<=4;k++){const v=mx*k/4;g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" opacity=".1"/><text x="${p.l-6}" y="${y(v)+3}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">${kfmt(v)}</text>`}
+ labels.forEach((l,i)=>{let b=0;series.forEach(s=>{const v=s.vals[i]||0;g+=`<rect x="${x(i)-bw/2}" y="${y(b+v)}" width="${bw}" height="${Math.max(0,y(b)-y(b+v))}" fill="${s.color}"><title>${esc(s.name)}: ${fmt(v)}</title></rect>`;b+=v});if(i%Math.ceil(n/9)===0)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">${l}</text>`});
+ return`<svg viewBox="0 0 ${W} ${H}" class="w-full text-neutral-900 dark:text-white">${g}</svg><div class="flex flex-wrap gap-4 text-xs text-neutral-500 mt-2">${series.map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background:${s.color}"></span>${esc(s.name)}</span>`).join('')}</div>`}
+function renderHome(){
+ if(!ALLM.length)return;
+ const P=period($('#month').value),m=P.ms[P.ms.length-1],k=prevKeys(m);
+ const R=DATA.vehicles.map(v=>{let c=0,cm=0,y=0,ya=0;P.ms.forEach(x=>{const a=val(v.id,x),b=val(v.id,prevY(x));if(a!=null)c+=a;if(b!=null)ya+=b;if(a!=null&&b!=null){cm+=a;y+=b}});return{...v,c,cm,y,ya,gy:y>0?growth(cm,y):null,p:P.year?null:val(v.id,k.mom)}});
+ const sm=f=>R.reduce((a,r)=>a+(f(r)||0),0),T=sm(r=>r.c),TY=sm(r=>r.ya),gy=growth(sm(r=>r.cm),sm(r=>r.y)||null),gm=P.year?null:growth(T,sm(r=>r.p)||null);
+ const tv=x=>DATA.vehicles.reduce((a,v)=>a+(val(v.id,x)||0),0);
+ const br={},brY={};R.forEach(r=>{br[r.mfg]=(br[r.mfg]||0)+r.c;brY[r.mfg]=(brY[r.mfg]||0)+r.ya});const bl=Object.entries(br).sort((a,b)=>b[1]-a[1]);
+ const top=[...R].sort((a,b)=>b.c-a.c),elig=R.filter(r=>r.c>=500*P.ms.length&&r.gy!=null).sort((a,b)=>b.gy-a.gy);
+ const dir=(g,l)=>g==null?null:`${g>=0?'up':'down'} ${Math.abs(g)}% on ${l}`;
+ const mt=P.ms.map(x=>[x,tv(x)]).sort((a,b)=>b[1]-a[1])[0],part=P.year&&P.ms.length<P.n,live=P.ms.includes(ALLM[ALLM.length-1]);
+ $('#hLab').textContent=P.year?'Full-year view':'Monthly snapshot';
+ $('#hHead').textContent=`${fmt(T)} cars sold in ${P.label}${part&&live?' so far':''}`;
+ const trend=P.year?dir(gy,'the same months of the previous year'):[dir(gy,mlabel(k.yoy,1)),dir(gm,mlabel(k.mom,1))].filter(Boolean).join(' and ');
+ $('#hSub').textContent=(part?`Covers ${P.ms.length} of ${P.n} months. `:'')+(trend?`The market is ${trend}. `:'')+`${bl[0][0]} leads with ${(bl[0][1]/T*100).toFixed(1)}% share, and ${top[0].model} is the best-selling model.`+(P.year?` Best month: ${mlabel(mt[0],1)} (${fmt(mt[1])}).`:'');
+ const row=(r,i,right)=>`<div data-v="${r.id}" class="hv flex items-center gap-3 rounded-lg px-2 py-2 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50">${i!=null?`<span class="w-5 text-xs text-neutral-400 num">${i}</span>`:''}${right}</div>`;
+ const mv=r=>row(r,null,`<div class="flex-1 min-w-0 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs text-neutral-500 num">${fmt(r.c)}</span><span class="w-16 text-right">${pill(r.gy)}</span>`);
+ const tm=P.year?P.ms:ALLM,mx=top[0].c||1,t6=bl.slice(0,6),oth=bl.slice(6).reduce((a,b)=>a+b[1],0),segs=oth?[...t6,['Others',oth]]:t6;
+ const B={
+ kpi:()=>`<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">`+kcard('Industry sales',fmt(T),pill(gy)+(P.year?' vs same months last year':' vs last year'))+kcard('Top brand',esc(bl[0][0]),`${fmt(bl[0][1])} units · ${(bl[0][1]/T*100).toFixed(1)}%`)+kcard('Best seller',esc(top[0].model),`${fmt(top[0].c)} units · ${esc(top[0].mfg)}`)+kcard('Fastest grower',elig[0]?esc(elig[0].model):'–',elig[0]?pill(elig[0].gy)+' YoY':'')+'</div>',
+ fy:()=>{const lm=ALLM[ALLM.length-1],F=+lm.slice(0,4)+(+lm.slice(5)>=4?1:0),fm=Y=>ALLM.filter(x=>x>=(Y-1)+'-04'&&x<=Y+'-03'),cm=fm(F),pv=fm(F-1),tt=ms=>ms.reduce((a,x)=>a+tv(x),0),ix=x=>{const o=+x.slice(5);return o>=4?o-4:o+8};
+  let a=0,b=0;cm.forEach(x=>DATA.vehicles.forEach(v=>{const p1=val(v.id,x),p2=val(v.id,prevY(x));if(p1!=null&&p2!=null){a+=p1;b+=p2}}));
+  const qs=ms=>[0,1,2,3].map(q=>{const z=ms.filter(x=>Math.floor(ix(x)/3)===q);return z.length?tt(z):null}),qa=qs(pv),qb=qs(cm),qx=Math.max(...qa.concat(qb).filter(v=>v!=null),1),fl=n=>'FY'+String(n).slice(2);
+  const bar=(v,c)=>v==null?'<div class="w-5"></div>':`<div class="w-5 rounded-t ${c}" style="height:${(v/qx*100).toFixed(1)}%" title="${fmt(v)}"></div>`;
+  return`<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">`+kcard(fl(F)+' so far',fmt(tt(cm)),cm.length+' of 12 months')+kcard('vs same months last FY',pill(growth(a,b||null)),'like-for-like')+kcard('Monthly average',fmt(Math.round(tt(cm)/cm.length)),'units / month')+kcard(fl(F-1)+(pv.length===12?' full year':' so far'),fmt(tt(pv)),pv.length+' months')+`</div>
+  <div class="mt-4"><div class="flex items-end justify-center gap-6 h-28">${[0,1,2,3].map(q=>`<div class="flex flex-col items-center gap-1 h-full justify-end"><div class="flex items-end gap-1 flex-1">${bar(qa[q],'bg-neutral-300 dark:bg-neutral-700')}${bar(qb[q],'bg-neutral-900 dark:bg-white')}</div><span class="text-xs text-neutral-500">Q${q+1}</span></div>`).join('')}</div>
+  <div class="flex justify-center gap-5 text-xs text-neutral-500 mt-2"><span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-neutral-300 dark:bg-neutral-700"></span>${fl(F-1)}</span><span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-neutral-900 dark:bg-white"></span>${fl(F)}</span></div></div>`},
+ top:()=>top.slice(0,10).map((r,i)=>row(r,i+1,`<div class="flex-1 min-w-0"><div class="flex justify-between text-sm"><span class="font-medium truncate">${esc(r.model)} <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></span><span class="num font-semibold">${fmt(r.c)}</span></div><div class="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 mt-1.5"><div class="h-1.5 rounded-full bg-neutral-900 dark:bg-white" style="width:${(r.c/mx*100).toFixed(1)}%"></div></div></div>${spark(r.id)}<span class="w-16 text-right">${pill(r.gy)}</span>`)).join(''),
+ brand:()=>{let acc=0;const rr=42,C=2*Math.PI*rr;return`<div class="flex items-center gap-5"><svg viewBox="0 0 120 120" class="w-36 h-36 shrink-0 text-neutral-900 dark:text-white">${segs.map((s,i)=>{const f=s[1]/T,o=-acc*C;acc+=f;return`<circle cx="60" cy="60" r="${rr}" fill="none" stroke="${SHC[i]}" stroke-width="16" stroke-dasharray="${(f*C).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${o.toFixed(2)}" transform="rotate(-90 60 60)"><title>${esc(s[0])}</title></circle>`}).join('')}<text x="60" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">${(bl[0][1]/T*100).toFixed(0)}%</text></svg><div class="flex-1 space-y-2">${segs.map((s,i)=>`<div class="flex items-center justify-between text-sm"><span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:${SHC[i]}"></span>${esc(s[0])}</span><span class="num text-neutral-500">${(s[1]/T*100).toFixed(1)}%</span></div>`).join('')}</div></div>`},
+ shift:()=>{if(!TY)return none('No prior-year data for this period.');const a=bl.map(([n,v])=>({n,now:v/T*100,was:(brY[n]||0)/TY*100})).map(o=>({...o,d:o.now-o.was})).sort((x,y)=>y.d-x.d),mxd=Math.max(...a.map(o=>Math.abs(o.d)),.1);
+  return`<div class="space-y-2.5">${a.map(o=>`<div class="flex items-center gap-3 text-sm"><span class="w-28 truncate">${esc(o.n)}</span><div class="flex-1 relative h-2 rounded-full bg-neutral-100 dark:bg-neutral-800"><div class="absolute top-0 bottom-0 w-px bg-neutral-400"  style="left:50%"></div><div class="absolute top-0 bottom-0 rounded-full ${o.d>=0?'bg-emerald-500':'bg-rose-500'}" style="${o.d>=0?'left:50%':'right:50%'};width:${(Math.abs(o.d)/mxd*50).toFixed(1)}%"></div></div><span class="w-28 text-right text-xs num ${o.d>=0?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'}">${o.d>=0?'+':''}${(Math.abs(o.d)<.05?0:o.d).toFixed(1)} pts <span class="text-neutral-400">${o.now.toFixed(1)}%</span></span></div>`).join('')}</div>`},
+ rank:()=>{const rk=(f,key)=>Object.fromEntries(R.filter(r=>r[key]>0).sort((a,b)=>b[key]-a[key]).map((r,i)=>[r.id,i+1])),RN=rk(0,'c'),RP=rk(0,'ya'),d=R.filter(r=>RN[r.id]&&RP[r.id]&&RN[r.id]!==RP[r.id]).map(r=>({...r,d:RP[r.id]-RN[r.id]})).sort((a,b)=>b.d-a.d),l=[...d.filter(x=>x.d>0).slice(0,4),...d.filter(x=>x.d<0).slice(-4).reverse()];
+  return l.length?l.map(r=>row(r,null,`<span class="w-12 text-sm font-bold num ${r.d>0?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'}">${r.d>0?'▲':'▼'} ${Math.abs(r.d)}</span><div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs text-neutral-500 num">#${RP[r.id]} → #${RN[r.id]}</span>`)).join(''):none('No rank changes.')},
+ up:()=>elig.slice(0,5).map(mv).join('')||none('Not enough data.'),
+ down:()=>[...elig].reverse().filter(r=>r.gy<0).slice(0,5).map(mv).join('')||none('No decliners.'),
+ new:()=>{if(!TY)return none('No prior-year data for this period.');const n=R.filter(r=>r.c>0&&!(r.ya>0)),d=R.filter(r=>r.c===0&&r.ya>0),tag=(t,c)=>`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${c}">${t}</span>`;
+  return n.length+d.length?[...n.map(r=>row(r,null,`${tag('New','bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400')}<div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs num text-neutral-500">${fmt(r.c)} units</span>`)),...d.map(r=>row(r,null,`${tag('Stopped','bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400')}<div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span></div><span class="text-xs num text-neutral-500">was ${fmt(r.ya)}</span>`))].join(''):none('No launches or discontinued models in this period.')},
+ rec:()=>{const it=ALLM.map(x=>[x,tv(x)]).sort((a,b)=>b[1]-a[1])[0],rc=R.map(r=>{const ms=ALLM.filter(x=>val(r.id,x)!=null);if(ms.length<3)return null;const bm=ms.reduce((b,x)=>val(r.id,x)>val(r.id,b)?x:b);return{...r,bm,bv:val(r.id,bm)}}).filter(r=>r&&P.ms.includes(r.bm)).sort((a,b)=>b.bv-a.bv).slice(0,5);
+  return`<div class="rounded-lg bg-neutral-50 dark:bg-neutral-800/50 px-3 py-2.5 mb-2 text-sm flex justify-between"><span>Industry best month</span><span class="font-semibold num">${mlabel(it[0],1)} · ${fmt(it[1])}${P.ms.includes(it[0])?' <span class="text-emerald-600">✓ in view</span>':''}</span></div>`+(rc.length?rc.map(r=>row(r,null,`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">Record</span><div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${mlabel(r.bm)}</span></div><span class="text-xs num font-semibold">${fmt(r.bv)}</span>`)).join(''):none('No model set a record in this period.'))},
+ trend:()=>lineSVG(tm.map(x=>mlabel(x)),[{name:'All models',vals:tm.map(tv),color:COL[0]}],kfmt),
+ stack:()=>{const tb={};tm.forEach(x=>DATA.vehicles.forEach(v=>tb[v.mfg]=(tb[v.mfg]||0)+(val(v.id,x)||0)));const bs=Object.entries(tb).sort((a,b)=>b[1]-a[1]).map(e=>e[0]),t5=bs.slice(0,5),ser=t5.map((b,i)=>({name:b,color:SHC[i],vals:tm.map(x=>DATA.vehicles.filter(v=>v.mfg===b).reduce((a,v)=>a+(val(v.id,x)||0),0))}));
+  ser.push({name:'Others',color:SHC[6],vals:tm.map(x=>DATA.vehicles.filter(v=>!t5.includes(v.mfg)).reduce((a,v)=>a+(val(v.id,x)||0),0))});return stackSVG(tm.map(x=>mlabel(x)),ser)},
+ heat:()=>{const all=ALLM.map(tv),hx=Math.max(...all),hn=Math.min(...all),ys=[...new Set(ALLM.map(x=>x.slice(0,4)))];
+  return`<div class="overflow-x-auto"><table class="w-full text-xs text-center"><thead class="text-neutral-500"><tr><th class="px-2 py-1 text-left">Year</th>${MN.map(n=>`<th class="px-1 py-1">${n}</th>`).join('')}</tr></thead><tbody>${ys.map(y=>`<tr><td class="px-2 py-1 text-left font-semibold">${y}</td>${MN.map((_,i)=>{const x=y+'-'+String(i+1).padStart(2,'0');if(!(x in DATA.sales))return'<td class="p-1"><div class="rounded h-9"></div></td>';const v=tv(x);return`<td class="p-1"><div class="rounded h-9 flex items-center justify-center num text-neutral-900 dark:text-white" style="background:rgba(37,99,235,${(.08+.5*(v-hn)/(hx-hn||1)).toFixed(2)})" title="${mlabel(x,1)}: ${fmt(v)}">${kfmt(v)}</div></td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}};
+ $('#hSec').innerHTML=HS.order.filter(id=>!HS.hidden[id]).map(id=>{const s=SECS.find(z=>z.id===id),inner=B[id]();return s.bare?`<div class="lg:col-span-2">${inner}</div>`:`<section class="card p-5 ${s.w===2?'lg:col-span-2':''}"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">${s.t}${s.sub?` <span class="normal-case font-normal">${s.sub}</span>`:''}</h2>${inner}</section>`}).join('')||'<p class="lg:col-span-2 text-center text-sm text-neutral-500 py-10">All sections are hidden. Use Customize to bring some back.</p>';
+ $$('#home .hv').forEach(d=>d.onclick=()=>openVehicle(d.dataset.v));
+}
+function renderCust(){
+ $('#cList').innerHTML=HS.order.map((id,i)=>{const s=SECS.find(z=>z.id===id);return`<div class="flex items-center gap-3 py-2.5"><input type="checkbox" data-id="${id}" ${HS.hidden[id]?'':'checked'} class="w-4 h-4"><span class="flex-1 text-sm">${s.t}</span><button data-mv="${i}:-1" class="b2 !px-2 !py-0.5">↑</button><button data-mv="${i}:1" class="b2 !px-2 !py-0.5">↓</button></div>`}).join('');
+ $$('#cList [data-id]').forEach(c=>c.onchange=()=>{HS.hidden[c.dataset.id]=!c.checked;saveHS();renderHome()});
+ $$('#cList [data-mv]').forEach(b=>b.onclick=()=>{const[i,d]=b.dataset.mv.split(':').map(Number),j=i+d;if(j<0||j>=HS.order.length)return;[HS.order[i],HS.order[j]]=[HS.order[j],HS.order[i]];saveHS();renderCust();renderHome()})}
+$('#hCust').onclick=()=>{renderCust();$('#cPanel').classList.remove('hidden')};
+$('#cClose').onclick=$('#cBg').onclick=()=>$('#cPanel').classList.add('hidden');
+$$('.pre').forEach(b=>b.onclick=()=>{const p=b.dataset.pre;HS.hidden={};if(p!=='compact'){if(p==='reset')HS.order=SECS.map(s=>s.id)}else SECS.forEach(s=>{if(!['kpi','top'].includes(s.id))HS.hidden[s.id]=true});saveHS();renderCust();renderHome()});
+$('#hSearch').onchange=e=>{const v=DATA.vehicles.find(x=>(x.mfg+' '+x.model).toLowerCase()===e.target.value.toLowerCase().trim()||x.model.toLowerCase()===e.target.value.toLowerCase().trim());if(v){e.target.value='';openVehicle(v.id)}};
+$('#hGoCmp').onclick=()=>{show('compare');renderCompare()};$('#hGoTbl').onclick=()=>show('dash');
+$('#brand').onclick=()=>show('home');
+
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>new Intl.NumberFormat('en-IN').format(n);
+const MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const mlabel=(k,l)=>new Date(k+'-01T00:00:00').toLocaleDateString('en-US',{month:'short',year:l?'numeric':'2-digit'});
+const today=()=>new Date().toISOString().slice(0,10);
+const nextMonth=m=>{let[y,o]=m.split('-').map(Number);o++;if(o>12){o=1;y++}return y+'-'+String(o).padStart(2,'0')};
+const slug=t=>t.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const vkey=(a,b)=>nkey(a)+'|'+nkey(b);
+const uid=(d,mfg,model)=>{const b=slug(mfg+' '+model)||'model',u=new Set(d.vehicles.map(v=>v.id));let id=b,n=2;while(u.has(id))id=b+'-'+n++;return id};
+const chk=(y,o)=>y>=1990&&y<=2100&&o>=1&&o<=12?y+'-'+String(o).padStart(2,'0'):null;
+function normPeriod(s){s=String(s??'').trim();let m;
+ if(m=s.match(/^(\d{4})[-\/.](\d{1,2})$/))return chk(+m[1],+m[2]);
+ if(m=s.match(/^(\d{1,2})[-\/.](\d{4})$/))return chk(+m[2],+m[1]);
+ if(m=s.match(/^([A-Za-z]{3,9})[\s\-'\/.,]*(\d{2}|\d{4})$/)){const i=MON.indexOf(m[1].slice(0,3).toLowerCase());if(i<0)return null;let y=+m[2];if(y<100)y+=2000;return chk(y,i+1)}
+ return null}
+function parseUnits(s){s=String(s??'').replace(/[,\s"']/g,'');if(s==='')return null;return /^\d+$/.test(s)?parseInt(s,10):NaN}
+function toast(t,bad){const e=$('#toast');e.textContent=t;e.className='fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg text-sm font-medium shadow-lg '+(bad?'bg-rose-600 text-white':'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3500)}
+function modal(title,body,wide){$('#mTitle').textContent=title;$('#mBody').innerHTML=body;$('#modal').firstElementChild.nextElementSibling.classList.toggle('max-w-3xl',!!wide);$('#modal').firstElementChild.nextElementSibling.classList.toggle('max-w-lg',!wide);$('#modal').classList.remove('hidden')}
+const closeModal=()=>$('#modal').classList.add('hidden');
+
+// ---- Name matching, aliases and the "Match names" step ----
+const nkey=s=>String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+const pairKey=(a,b)=>nkey(a)+'|'+nkey(b);
+function aliasMap(){const m=new Map(),ids=new Set(DATA.vehicles.map(v=>v.id));Object.entries(DATA.aliases||{}).forEach(([k,id])=>{const i=k.indexOf('|');if(i>0&&ids.has(id))m.set(pairKey(k.slice(0,i),k.slice(i+1)),id)});return m}
+function matchVehicle(mfg,model){const k=pairKey(mfg,model),a=aliasMap().get(k);if(a)return a;const v=DATA.vehicles.find(x=>pairKey(x.mfg,x.model)===k);return v?v.id:null}
+const canonBrand=m=>{const v=DATA.vehicles.find(x=>nkey(x.mfg)===nkey(m));return v?v.mfg:String(m).trim().replace(/\s+/g,' ')};
+function lev(a,b){const d=Array.from({length:b.length+1},(_,j)=>j);for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+function sim(a,b){if(!a||!b)return 0;if(a===b)return 1;const[x,y]=a.length<b.length?[a,b]:[b,a],dg=t=>t.replace(/[^0-9]/g,'');
+ let s=(x.length>=3&&(y.startsWith(x)||y.endsWith(x)))?.65:1-lev(a,b)/Math.max(a.length,b.length);if(dg(a)!==dg(b))s=Math.min(s,.5);return s}
+function suggest(mfg,model){const bk=nkey(mfg),mk=nkey(model);let pool=DATA.vehicles.filter(v=>nkey(v.mfg)===bk);if(!pool.length)pool=DATA.vehicles;
+ const sc=pool.map(v=>({v,s:sim(mk,nkey(v.model))})).sort((a,b)=>b.s-a.s);return sc[0]&&sc[0].s>=.6?sc[0]:null}
+let RES=null;
+function resolveNames(items,then){if(!items.length)return then(new Map());RES={items,then};
+ const rows=items.map((it,i)=>{const sg=suggest(it.mfg,it.model),def=sg&&sg.s>=.7?'v:'+sg.v.id:'new',bk=nkey(it.mfg),same=DATA.vehicles.filter(v=>nkey(v.mfg)===bk),pool=same.length?same:sortedVehicles();
+  return`<tr class="align-top"><td class="py-2 pr-3"><div class="font-medium">${esc(it.model)}</div><div class="text-xs text-neutral-500">${esc(it.mfg)} · ${fmt(it.units)}${it.n>1?' · '+it.n+' values':''}</div></td><td class="py-2"><select data-i="${i}" class="sl !mt-0"><option value="new" ${def==='new'?'selected':''}>Add as new model</option><option value="skip">Skip</option><optgroup label="Map to existing model">${pool.map(v=>`<option value="v:${esc(v.id)}" ${def==='v:'+v.id?'selected':''}>${esc(v.mfg)} ${esc(v.model)}${sg&&sg.v.id===v.id?' (closest)':''}</option>`).join('')}</optgroup></select></td></tr>`}).join('');
+ modal('Match names',`<p class="text-sm text-neutral-500 mb-3">${items.length} name${items.length>1?'s don’t':' doesn’t'} match an existing model. Choose what to do with each one. Nothing changes until you confirm.</p><div class="flex gap-4 text-xs mb-2"><button data-act="resAll" data-v="new" class="underline">All → add as new</button><button data-act="resAll" data-v="skip" class="underline">All → skip</button></div>
+ <div class="max-h-[50vh] overflow-y-auto"><table class="w-full text-sm"><tbody id="resBody">${rows}</tbody></table></div><label class="text-sm flex items-center gap-2 mt-3"><input type="checkbox" id="resRem" checked> Remember mappings to existing models (saved in data.json)</label><div class="flex justify-end gap-2 pt-3"><button data-act="resCancel" class="b2">Cancel</button><button data-act="resGo" class="pb">Confirm</button></div>`,1)}
+function resGo(){const map=new Map(),rem=$('#resRem').checked;let nn=0,mp=0,sk=0;
+ $$('#resBody select').forEach(s=>{const it=RES.items[+s.dataset.i],pk=pairKey(it.mfg,it.model),v=s.value;if(v==='skip'){sk++;return}
+  if(v==='new'){const b=canonBrand(it.mfg),m=it.model.trim().replace(/\s+/g,' '),nv={id:uid(DATA,b,m),mfg:b,model:m};DATA.vehicles.push(nv);map.set(pk,nv.id);nn++;return}
+  const vid=v.slice(2);map.set(pk,vid);mp++;if(rem){DATA.aliases=DATA.aliases||{};DATA.aliases[it.mfg.trim()+'|'+it.model.trim()]=vid}});
+ const f=RES.then;RES=null;closeModal();if(nn||mp)markDirty();f(map,{nn,mp,sk})}
+function aliasSection(){const a=Object.entries(DATA.aliases||{}),V=Object.fromEntries(DATA.vehicles.map(v=>[v.id,v]));if(!a.length)return'';
+ return`<h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 pt-4">Name mappings <span class="normal-case font-normal">(saved in data.json)</span></h2><div class="card overflow-x-auto"><table class="w-full text-sm"><thead class="th"><tr><th class="text-left px-4 py-3">Source name</th><th class="text-left px-4 py-3">Maps to</th><th class="px-4 py-3"></th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">${a.map(([k,id])=>`<tr><td class="px-4 py-2.5">${esc(k.replace('|',' · '))}</td><td class="px-4 py-2.5">${V[id]?esc(V[id].mfg+' '+V[id].model):esc(id)}</td><td class="px-4 py-2.5 text-right text-xs"><button data-act="delAlias" data-k="${esc(k)}" class="underline text-rose-600">Remove</button></td></tr>`).join('')}</tbody></table></div>`}
+
+// ---- State ----
+const DKEY='ap_builder_draft_v1';
+let YO={},dirty=false,tab='set',AM={month:'',vals:{}},AQ='',IMP={rows:[],text:''},DQ='';
+
+function normalize(x){
+ if(Array.isArray(x)&&x.length&&x[0]&&x[0].sales){const d={schemaVersion:1,lastUpdated:today(),unit:'units',vehicles:[],sales:{}};
+  x.forEach(r=>{const id=uid(d,r.mfg,r.model);d.vehicles.push({id,mfg:r.mfg,model:r.model});Object.entries(r.sales||{}).forEach(([m,v])=>{(d.sales[m]=d.sales[m]||{})[id]=+v})});return d}
+ if(x&&Array.isArray(x.vehicles)&&x.sales&&typeof x.sales==='object'&&!Array.isArray(x.sales)){
+  const ids=new Set();x.vehicles.forEach(v=>{if(!v||typeof v.id!=='string'||typeof v.mfg!=='string'||typeof v.model!=='string')throw Error('A vehicle is missing id, mfg or model');if(ids.has(v.id))throw Error('Duplicate vehicle id: '+v.id);ids.add(v.id)});
+  Object.entries(x.sales).forEach(([m,o])=>{if(!/^\d{4}-\d{2}$/.test(m))throw Error('Bad month key: '+m);Object.entries(o).forEach(([id,u])=>{if(!ids.has(id))throw Error('Sales refer to unknown vehicle: '+id);if(!Number.isInteger(u)||u<0)throw Error('Bad value for '+id+' in '+m)})});
+  if(x.aliases){if(typeof x.aliases!=='object'||Array.isArray(x.aliases))throw Error('aliases must be an object');Object.keys(x.aliases).forEach(k=>{if(!ids.has(x.aliases[k]))delete x.aliases[k]})}
+  return x}
+ throw Error('Not a recognised data.json file')}
+const months=()=>Object.keys(DATA.sales).sort();
+function saveDraft(){try{localStorage.setItem(DKEY,JSON.stringify(DATA))}catch(e){}}
+function markDirty(){dirty=true;saveDraft();renderBar();renderTabs();window.onDataChanged&&window.onDataChanged()}
+function setMonth(m){AM.month=m;AM.vals=Object.fromEntries(Object.entries(DATA.sales[m]||{}).map(([k,v])=>[k,String(v)]))}
+function setData(d,isDirty){DATA=d;dirty=!!isDirty;if(dirty)saveDraft();const ms=months();setMonth(ms.length?nextMonth(ms[ms.length-1]):today().slice(0,7));AM.vals={};tab='set';AQ='';DQ='';IMP={rows:[],text:''};shell();window.onDataChanged&&window.onDataChanged()}
+window.onbeforeunload=e=>{if(dirty){e.preventDefault();return''}};
+
+// ---- Shell ----
+
+function shell(){$('#bApp').innerHTML='<div id="bar"></div><div id="tabs"></div><div id="pane" class="space-y-4"></div>';renderBar();renderTabs();renderPane()}
+function renderBar(){const ms=months(),br=new Set(DATA.vehicles.map(v=>v.mfg));
+ $('#bar').innerHTML=`<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-3"><div><h1 class="text-xl font-bold text-neutral-900 dark:text-white">Data builder</h1>
+ <p class="text-sm text-neutral-500">${DATA.vehicles.length} models · ${br.size} brands · ${ms.length} months${ms.length?` (${mlabel(ms[0],1)} – ${mlabel(ms[ms.length-1],1)})`:''} · updated ${esc(DATA.lastUpdated||'–')}</p></div>
+ <div class="flex flex-wrap items-center gap-2"><span class="flex items-center gap-1.5 text-xs text-neutral-500"><span class="w-2 h-2 rounded-full ${dirty?'bg-amber-500':'bg-emerald-500'}"></span>${dirty?'Unsaved changes':'Saved'}</span>
+ <button data-act="load" class="b2">Load data.json</button><button data-act="copy" class="b2">Copy JSON</button><button data-act="download" class="pb">Download data.json</button></div></div>`}
+function renderTabs(){const n=computeIssues().length;
+ $('#tabs').innerHTML=`<div class="flex gap-1 border-b border-neutral-200 dark:border-neutral-800 text-sm font-medium overflow-x-auto">`+[['set','Dataset'],['imp','Import'],['add','Add Month']].map(([k,l])=>`<button data-tab="${k}" class="px-4 py-2.5 -mb-px border-b-2 whitespace-nowrap ${tab===k?'border-neutral-900 dark:border-white text-neutral-900 dark:text-white':'border-transparent text-neutral-500'}">${l}</button>`).join('')+'</div>'}
+function renderPane(){({add:renderAdd,imp:renderImport,set:renderDataset})[tab]()}
+function go(t){tab=t;renderTabs();renderPane()}
+
+// ---- Add month ----
+function prevRef(m){const a=months().filter(x=>x<m);return a.length?a[a.length-1]:null}
+function sortedVehicles(){return[...DATA.vehicles].sort((a,b)=>a.mfg.localeCompare(b.mfg)||a.model.localeCompare(b.model))}
+function renderAdd(){
+ const ref=prevRef(AM.month),rv=ref?DATA.sales[ref]:{};
+ let g='',last='';sortedVehicles().forEach(v=>{if(v.mfg!==last){g+=`<div class="col-span-full text-xs font-semibold uppercase tracking-wider text-neutral-500 pt-3 first:pt-0" data-brand="${esc(v.mfg.toLowerCase())}">${esc(v.mfg)}</div>`;last=v.mfg}
+  g+=`<label data-row="${esc((v.mfg+' '+v.model).toLowerCase())}" data-brand="${esc(v.mfg.toLowerCase())}" class="flex items-center justify-between gap-3 card px-3 py-2"><span class="text-sm truncate">${esc(v.model)}</span><input data-id="${esc(v.id)}" inputmode="numeric" autocomplete="off" class="cell sl !w-28 !mt-0 text-right num" value="${esc(AM.vals[v.id]??'')}" placeholder="${rv[v.id]!=null?fmt(rv[v.id]):''}"></label>`});
+ $('#pane').innerHTML=`<div class="flex flex-wrap items-end gap-3"><label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Month<input type="month" id="amMonth" value="${AM.month}" class="sl !w-auto"></label>
+ <input id="amQ" placeholder="Filter models…" value="${esc(AQ)}" class="sl !w-56 !mt-0"><button data-act="addModelOpen" class="b2">+ Add model</button><button data-act="pasteOpen" class="b2">Paste from Excel</button>
+ ${ref?`<button data-act="prevCopy" class="b2">Copy ${mlabel(ref,1)} values</button>`:''}<button data-act="clearCells" class="b2">Clear</button></div>
+ <p id="amInfo" class="text-xs text-neutral-500"></p><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">${g||'<p class="text-sm text-neutral-500">No models yet. Use “Add model” or the Import tab.</p>'}</div>
+ <div class="flex justify-end"><button data-act="applyMonth" class="pb">Apply month to dataset</button></div>`;
+ filterAdd();updAm()}
+function cellVal(s){s=String(s??'').replace(/[,\s]/g,'');return s===''?null:/^\d+$/.test(s)?parseInt(s,10):NaN}
+function updAm(){const m=AM.month,ref=prevRef(m),adj=!!ref&&nextMonth(ref)===m,rv=ref?DATA.sales[ref]:{},sv=DATA.sales[m]||null;let f=0,w=0,b=0,c=0;
+ $$('#pane .cell').forEach(i=>{const v=cellVal(i.value),old=sv?(sv[i.dataset.id]??null):null;i.classList.remove('warn','bad','chg');i.title='';
+  if(Number.isNaN(v)){i.classList.add('bad');i.title='Whole numbers only';b++}
+  else{if(v!=null)f++;if(sv&&v!==old){i.classList.add('chg');i.title='Saved value: '+(old==null?'none':fmt(old));c++}
+   if(v!=null&&adj){const o=rv[i.dataset.id];if(o!=null&&o>=100&&Math.abs(v-o)/o>.6){i.classList.add('warn');i.title=(v>o?'+':'')+Math.round((v-o)/o*100)+'% vs '+mlabel(ref);w++}}}});
+ const e=$('#amInfo');if(e)e.innerHTML=(sv?`<b class="text-amber-600">Editing existing month</b> · `:'New month · ')+`${f} of ${DATA.vehicles.length} models filled${c?` · <b class="text-blue-600">${c} changed vs saved</b>`:''}${b?` · <b class="text-rose-600">${b} invalid</b>`:''}${w?` · <b class="text-amber-600">${w} big swing${w>1?'s':''}</b> (over 60% vs ${mlabel(ref)})`:''}${ref?` · grey hints show ${mlabel(ref,1)}${adj?'':' (not the previous month)'}`:''} · blank = no data`}
+function filterAdd(){const q=AQ.toLowerCase().trim();$$('#pane [data-row]').forEach(r=>r.classList.toggle('hidden',!!q&&!r.dataset.row.includes(q)));
+ $$('#pane div[data-brand]').forEach(h=>h.classList.toggle('hidden',!!q&&!$$('#pane label[data-brand]').some(l=>l.dataset.brand===h.dataset.brand&&!l.classList.contains('hidden'))))}
+function applyMonth(){const m=AM.month;if(!/^\d{4}-\d{2}$/.test(m))return toast('Pick a month first',1);
+ const o={};let bad=0;$$('#pane .cell').forEach(i=>{const v=cellVal(i.value);if(Number.isNaN(v))bad++;else if(v!=null)o[i.dataset.id]=v});
+ if(bad)return toast(bad+' cell(s) are not whole numbers',1);if(!Object.keys(o).length)return toast('Enter at least one value',1);
+ if(DATA.sales[m]&&!confirm(`${mlabel(m,1)} already has ${Object.keys(DATA.sales[m]).length} values. Replace them with these ${Object.keys(o).length}?`))return;
+ const ex=!!DATA.sales[m];DATA.sales[m]=o;markDirty();setMonth(m);renderAdd();toast(`${ex?'Updated':'Added'} ${mlabel(m,1)} with ${Object.keys(o).length} values`)}
+function addModelOpen(){modal('Add model',`<div class="space-y-3"><label class="block text-xs font-semibold uppercase tracking-wider text-neutral-500">Manufacturer<input id="nmMfg" list="nmBrands" class="sl"><datalist id="nmBrands">${[...new Set(DATA.vehicles.map(v=>v.mfg))].sort().map(b=>`<option value="${esc(b)}">`).join('')}</datalist></label>
+ <label class="block text-xs font-semibold uppercase tracking-wider text-neutral-500">Model<input id="nmModel" class="sl"></label><div class="flex justify-end"><button data-act="addModel" class="pb">Add model</button></div></div>`)}
+function addModel(){const a=$('#nmMfg').value.trim().replace(/\s+/g,' '),b=$('#nmModel').value.trim().replace(/\s+/g,' ');if(!a||!b)return toast('Enter manufacturer and model',1);
+ if(DATA.vehicles.some(v=>vkey(v.mfg,v.model)===vkey(a,b)))return toast('That model already exists',1);
+ DATA.vehicles.push({id:uid(DATA,a,b),mfg:a,model:b});closeModal();markDirty();if(tab==='add')renderAdd();toast(`Added ${a} ${b}`)}
+function pasteOpen(){modal('Paste from Excel',`<div class="space-y-3"><p class="text-xs text-neutral-500">Paste three columns straight from Excel: <b>Maker, Model, Units</b> for <b>${mlabel(AM.month,1)}</b>. Blank rows and TOTAL rows are ignored. Names are matched ignoring case, accents and spaces, and anything unmatched is shown for your approval. Two columns (<b>Model, units</b>) or a plain column of numbers also work.</p><textarea id="psText" rows="10" class="sl font-mono text-xs" placeholder="Citroen&#9;C3&#9;220&#10;Citroen&#9;E C3&#9;61"></textarea><div class="flex justify-end"><button data-act="pasteApply" class="pb">Fill cells</button></div></div>`)}
+function pasteApply(){const lines=$('#psText').value.split(/\r?\n/),V=sortedVehicles(),rows=[],legacy=[],bad=[],isTot=s=>/^(grand\s*|sub\s*)?total$/i.test(String(s).trim());let totals=0,pos=0,n=0,first=true;
+ lines.forEach(raw=>{const l=raw.replace(/\u00a0/g,' ').trim();if(!l.replace(/[\t,]/g,'').trim())return;
+  const p=(l.includes('\t')?l.split('\t'):l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)).map(x=>x.trim().replace(/^"|"$/g,''));
+  if(p.length>=3){if(isTot(p[1])||isTot(p[0])){totals++;return}if(!p[0]||!p[1])return;const u=parseUnits(p[2]);if(u==null)return;
+   if(Number.isNaN(u)){if(first&&/^[a-z]/i.test(p[2])){first=false;return}bad.push(p[0]+' '+p[1]);return}first=false;rows.push({mfg:p[0],model:p[1],units:u,pk:pairKey(p[0],p[1])})}
+  else if(p.length===2){if(isTot(p[0])){totals++;return}legacy.push(p)}
+  else{const u=cellVal(p[0]);if(u!=null&&!Number.isNaN(u)&&V[pos]){AM.vals[V[pos].id]=String(u);n++}pos++}});
+ const by={};V.forEach(v=>{by[nkey(v.model)]=by[nkey(v.model)]||v;by[nkey(v.mfg+v.model)]=v});const miss=[];
+ legacy.forEach(p=>{const v=by[nkey(p[0])],u=cellVal(p[1]);if(v&&u!=null&&!Number.isNaN(u)){AM.vals[v.id]=String(u);n++}else miss.push(p[0])});
+ const un=new Map();rows.forEach(r=>{r.vid=matchVehicle(r.mfg,r.model);if(!r.vid){const e=un.get(r.pk);if(e)e.n++;else un.set(r.pk,{mfg:r.mfg,model:r.model,units:r.units,n:1})}});
+ resolveNames([...un.values()],(map,st)=>{let sk=0;rows.forEach(r=>{const vid=r.vid||map.get(r.pk);if(vid){AM.vals[vid]=String(r.units);n++}else sk++});
+  closeModal();renderAdd();toast(`Filled ${n} cell(s)`+(st&&st.nn?` · ${st.nn} new model(s) added`:'')+(sk?` · ${sk} skipped`:'')+(totals?` · ${totals} total row(s) ignored`:'')+(miss.length?` · not matched: ${miss.slice(0,3).join(', ')}`:'')+(bad.length?` · ${bad.length} invalid`:''),!n)})}
+// ---- Import ----
+function parseCSV(t){const first=t.split(/\r?\n/)[0]||'',d=[['\t',(first.match(/\t/g)||[]).length],[';',(first.match(/;/g)||[]).length],[',',(first.match(/,/g)||[]).length]].sort((a,b)=>b[1]-a[1])[0][0],rows=[];let r=[],c='',q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===d){r.push(c);c=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;r.push(c);c='';if(r.some(x=>x.trim()!==''))rows.push(r);r=[]}else c+=ch}
+ r.push(c);if(r.some(x=>x.trim()!==''))rows.push(r);return rows.map(x=>x.map(y=>y.trim()))}
+function tableToRows(tb){if(!tb.length)return null;const h=tb[0].map(x=>x.toLowerCase().replace(/[^a-z]/g,'')),fi=(...n)=>h.findIndex(x=>n.includes(x));
+ const im=fi('manufacturer','mfg','brand','make','maker','oem','company','makername'),imo=fi('model','vehicle','car','name','modelname'),ip=fi('period','month','date'),iu=fi('units','sales','volume','qty','quantity');
+ const isT=r=>/^(grand\s*|sub\s*)?total$/i.test(String(r.model||'').trim())||/^(grand\s*|sub\s*)?total$/i.test(String(r.mfg||'').trim());
+ const fin=a=>{const k=a.filter(r=>!isT(r));IMP.totals=(IMP.totals||0)+a.length-k.length;return k};
+ if(im>=0&&imo>=0&&ip>=0&&iu>=0)return fin(tb.slice(1).map(r=>({mfg:r[im],model:r[imo],period:r[ip],units:r[iu]})));
+ if(im>=0&&imo>=0){const cols=tb[0].map((x,i)=>({i,p:normPeriod(x)})).filter(c=>c.p);if(cols.length){const o=[],body=tb.slice(1),keep=body.filter(r=>!isT({mfg:r[im],model:r[imo]}));IMP.totals=(IMP.totals||0)+body.length-keep.length;keep.forEach(r=>cols.forEach(c=>{if((r[c.i]??'').trim()!=='')o.push({mfg:r[im],model:r[imo],period:c.p,units:r[c.i]})}));return o}}
+ if(tb[0].length>=4)return fin(tb.map(r=>({mfg:r[0],model:r[1],period:r[2],units:r[3]})));return null}
+function jsonToRows(x){const o=[];
+ if(x&&x.vehicles&&x.sales){const V=Object.fromEntries(x.vehicles.map(v=>[v.id,v]));Object.entries(x.sales).forEach(([p,s])=>Object.entries(s).forEach(([id,u])=>{if(V[id])o.push({mfg:V[id].mfg,model:V[id].model,period:p,units:u})}));return o}
+ if(Array.isArray(x)){x.forEach(r=>{if(!r)return;if(r.sales)Object.entries(r.sales).forEach(([p,u])=>o.push({mfg:r.mfg,model:r.model,period:p,units:u}));else o.push({mfg:r.mfg??r.Manufacturer,model:r.model??r.Model,period:r.period??r.Period,units:r.units??r.Units})});return o}
+ return null}
+function classify(rows){const cache={};return rows.map(r=>{const mfg=String(r.mfg??'').trim(),model=String(r.model??'').trim(),period=normPeriod(r.period),u=parseUnits(r.units);let st='ok',why='',old=null,sug=null;
+  if(!mfg||!model){st='bad';why='Missing manufacturer or model'}else if(!period){st='bad';why='Unrecognised period'}else if(u==null||Number.isNaN(u)){st='bad';why='Units must be a whole number'}
+  if(st==='ok'){const id=matchVehicle(mfg,model);if(id){old=DATA.sales[period]?.[id]??null;st=old==null?'add':old===u?'same':'over'}else{st='new';const k=pairKey(mfg,model);if(!(k in cache))cache[k]=suggest(mfg,model);sug=cache[k]}}
+  return{mfg,model,period,units:u,st,why,old,sug}})}
+function importParse(text){IMP.text=text;IMP.totals=0;if(!text.trim()){IMP.rows=[];IMP.err='';return}
+ try{let rows;if(/^\s*[\[{]/.test(text))rows=jsonToRows(JSON.parse(text));else rows=tableToRows(parseCSV(text));
+  if(!rows||!rows.length){IMP.rows=[];IMP.err='Could not find rows. Use columns Manufacturer, Model, Period, Units, or Manufacturer, Model plus month columns.';return}
+  IMP.rows=classify(rows);IMP.err='';IMP.cfg={}}catch(e){IMP.rows=[];IMP.err='Could not read this input: '+e.message}}
+function renderImport(){$('#pane').innerHTML=`<div class="grid lg:grid-cols-2 gap-4"><div id="impZone" class="rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 p-8 text-center space-y-2"><div class="text-2xl">⬆</div><p class="text-sm font-semibold">Drop a CSV or JSON file</p>
+ <p class="text-xs text-neutral-500">Long: Manufacturer, Model, Period, Units · Wide: Manufacturer, Model, then one column per month</p><div class="flex justify-center gap-2"><button data-act="impPick" class="b2">Choose file</button><button data-act="tpl" class="b2">Copy CSV template</button></div></div>
+ <textarea id="impText" rows="6" class="sl !mt-0 font-mono text-xs" placeholder="Manufacturer, Model, Period, Units&#10;Hyundai, Creta, 2026-10, 18200">${esc(IMP.text)}</textarea></div><div id="impOut"></div>`;renderImpOut()}
+function renderImpOut(){const R=IMP.rows,c=k=>R.filter(r=>r.st===k).length,e=$('#impOut');
+ if(IMP.err){e.innerHTML=`<p class="text-sm text-rose-600">${esc(IMP.err)}</p>`;return}if(!R.length){e.innerHTML='';return}
+ IMP.cfg=IMP.cfg||{};const pers=[...new Set(R.filter(r=>r.period).map(r=>r.period))].sort();pers.forEach(p=>{if(!IMP.cfg[p])IMP.cfg[p]={on:true,over:false}});
+ const pc=(p,k)=>R.filter(r=>r.period===p&&r.st===k).length,ord={bad:0,new:1,over:2,add:3,same:4,ok:5},show=[...R].sort((a,b)=>ord[a.st]-ord[b.st]).slice(0,150),
+  newM=new Set(R.filter(r=>r.st==='new').map(r=>pairKey(r.mfg,r.model))).size,usable=R.filter(r=>r.st!=='bad'&&r.st!=='same'&&IMP.cfg[r.period]&&IMP.cfg[r.period].on&&(r.st!=='over'||IMP.cfg[r.period].over)).length;
+ const P={bad:['Invalid','bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400'],new:['New model','bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400'],over:['Overwrite','bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400'],add:['Add','bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'],same:['No change','bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400']};
+ e.innerHTML=`<div class="card overflow-hidden"><div class="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-500">Months in this file${IMP.totals?` · ${IMP.totals} total row${IMP.totals>1?'s':''} skipped`:''}</div>
+ <table class="w-full text-xs"><thead class="th"><tr><th class="text-left px-4 py-2">Month</th><th class="text-right px-2 py-2">Add</th><th class="text-right px-2 py-2">New model</th><th class="text-right px-2 py-2">Overwrite</th><th class="text-right px-2 py-2">Same</th><th class="text-center px-2 py-2">Import</th><th class="text-center px-2 py-2">Overwrite existing</th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+ ${pers.map(p=>`<tr><td class="px-4 py-2 font-medium">${mlabel(p,1)}${DATA.sales[p]?' <span class="text-neutral-400">(exists)</span>':''}</td><td class="px-2 text-right num">${pc(p,'add')}</td><td class="px-2 text-right num">${pc(p,'new')}</td><td class="px-2 text-right num">${pc(p,'over')}</td><td class="px-2 text-right num">${pc(p,'same')}</td><td class="px-2 text-center"><input type="checkbox" data-impm="${p}|on" ${IMP.cfg[p].on?'checked':''}></td><td class="px-2 text-center"><input type="checkbox" data-impm="${p}|over" ${IMP.cfg[p].over?'checked':''} ${pc(p,'over')?'':'disabled'}></td></tr>`).join('')}</tbody></table></div>
+ <div class="card overflow-hidden mt-3"><div class="px-4 py-3 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 dark:border-neutral-800"><span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Validation preview · ${R.length} rows</span>
+ <span class="text-xs"><b class="text-emerald-600">${c('add')} new values</b> · <b class="text-amber-600">${newM} unmatched names</b> · <b class="text-blue-600">${c('over')} differ from saved</b> · ${c('same')} unchanged · <b class="text-rose-600">${c('bad')} invalid</b></span></div>
+ <div class="max-h-96 overflow-auto"><table class="w-full text-xs"><thead class="th sticky top-0"><tr><th class="text-left px-4 py-2">Status</th><th class="text-left px-2 py-2">Manufacturer</th><th class="text-left px-2 py-2">Model</th><th class="text-left px-2 py-2">Period</th><th class="text-right px-4 py-2">Units</th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+ ${show.map(r=>`<tr class="${r.st==='bad'?'bg-rose-50 dark:bg-rose-500/10':''}"><td class="px-4 py-1.5"><span class="pill ${P[r.st][1]}">${P[r.st][0]}</span></td><td class="px-2">${esc(r.mfg)}</td><td class="px-2">${esc(r.model)}${r.sug&&r.sug.s>=.7?` <span class="text-neutral-400">≈ ${esc(r.sug.v.model)}?</span>`:''}</td><td class="px-2">${esc(r.period||'?')}</td><td class="px-4 text-right num">${r.st==='bad'?esc(r.why):(r.st==='over'?`<span class="text-neutral-400">${fmt(r.old)} →</span> `:'')+fmt(r.units)}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="flex flex-wrap items-center justify-between gap-3 pt-3"><p class="text-xs text-neutral-500">Unmatched names are shown for your approval before anything is merged. Existing values are kept unless you tick “Overwrite existing” for that month.</p><button data-act="impMerge" class="pb" ${usable?'':'disabled'}>Merge ${usable} value${usable===1?'':'s'}</button></div>`}
+function impMerge(){const ok=r=>r.st!=='bad'&&r.st!=='same'&&IMP.cfg[r.period]&&IMP.cfg[r.period].on&&(r.st!=='over'||IMP.cfg[r.period].over),rows=IMP.rows.filter(ok),un=new Map();
+ rows.filter(r=>r.st==='new').forEach(r=>{const k=pairKey(r.mfg,r.model),x=un.get(k);if(x)x.n++;else un.set(k,{mfg:r.mfg,model:r.model,units:r.units,n:1})});
+ resolveNames([...un.values()],(map,st)=>{let w=0,ow=0,sk=0;rows.forEach(r=>{const vid=matchVehicle(r.mfg,r.model)||map.get(pairKey(r.mfg,r.model));if(!vid){sk++;return}const cur=DATA.sales[r.period]?.[vid];if(cur===r.units)return;if(cur!=null&&!IMP.cfg[r.period].over){sk++;return}(DATA.sales[r.period]=DATA.sales[r.period]||{})[vid]=r.units;cur!=null?ow++:w++});
+  IMP={rows:[],text:''};markDirty();renderImport();toast(`Merged: ${w} added, ${ow} overwritten${st&&st.nn?`, ${st.nn} new model${st.nn>1?'s':''}`:''}${sk?`, ${sk} skipped`:''}`)})}
+function readFile(f,cb){const r=new FileReader();r.onload=()=>cb(String(r.result));r.readAsText(f)}
+
+// ---- Dataset ----
+const yOpen=y=>y in YO?YO[y]:y===(months().slice(-1)[0]||'').slice(0,4);
+function monthsAcc(){const ms=months(),ys=[...new Set(ms.map(m=>m.slice(0,4)))].reverse();
+ if(!ys.length)return'<div class="card p-6 text-center text-sm text-neutral-500">No months yet. Use Import or Add Month.</div>';
+ return'<div class="space-y-2">'+ys.map(y=>{const mm=ms.filter(m=>m.startsWith(y)).reverse(),tot=mm.reduce((a,m)=>a+Object.values(DATA.sales[m]).reduce((p,q)=>p+q,0),0),o=yOpen(y);
+  return`<div class="card overflow-hidden"><button data-act="togYear" data-y="${y}" class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/40"><span class="font-semibold"><span class="inline-block w-5 text-neutral-400">${o?'▾':'▸'}</span>${y}</span><span class="text-xs text-neutral-500">${mm.length} month${mm.length>1?'s':''} · ${fmt(tot)} units</span></button>
+  ${o?`<div class="overflow-x-auto border-t border-neutral-200 dark:border-neutral-800"><table class="w-full text-sm"><thead class="th"><tr><th class="text-left px-4 py-3">Month</th><th class="text-right px-4 py-3">Models</th><th class="text-right px-4 py-3">Industry total</th><th class="px-4 py-3"></th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">${mm.map(m=>`<tr><td class="px-4 py-2.5 font-medium">${mlabel(m,1)}</td><td class="px-4 py-2.5 text-right num">${Object.keys(DATA.sales[m]).length}</td><td class="px-4 py-2.5 text-right num">${fmt(Object.values(DATA.sales[m]).reduce((a,b)=>a+b,0))}</td><td class="px-4 py-2.5 text-right text-xs space-x-3"><button data-act="editMonth" data-m="${m}" class="underline">Edit values</button><button data-act="delMonth" data-m="${m}" class="underline text-rose-600">Delete</button></td></tr>`).join('')}</tbody></table></div>`:''}</div>`}).join('')+'</div>'}
+function renderDataset(){const q=DQ.toLowerCase().trim(),ms=months();
+ const rows=sortedVehicles().filter(v=>!q||(v.mfg+' '+v.model+' '+v.id).toLowerCase().includes(q));
+ $('#pane').innerHTML=`<h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Months</h2>${monthsAcc()}<h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 pt-4">Models</h2><input id="dsQ" placeholder="Search models or brands…" value="${esc(DQ)}" class="sl !w-72 !mt-0"><div class="card overflow-x-auto"><table class="w-full text-sm"><thead class="th"><tr><th class="text-left px-4 py-3">Manufacturer</th><th class="text-left px-4 py-3">Model</th><th class="text-left px-4 py-3">ID</th><th class="text-right px-4 py-3">Months</th><th class="text-right px-4 py-3">Latest</th><th class="px-4 py-3"></th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+ ${rows.map(v=>{const have=ms.filter(m=>DATA.sales[m][v.id]!=null),lm=have[have.length-1];return`<tr data-vid="${esc(v.id)}"><td class="px-4 py-2.5">${esc(v.mfg)}</td><td class="px-4 py-2.5 font-medium">${esc(v.model)}</td><td class="px-4 py-2.5 text-xs text-neutral-500 font-mono">${esc(v.id)}</td><td class="px-4 py-2.5 text-right num">${have.length}</td><td class="px-4 py-2.5 text-right num">${lm?fmt(DATA.sales[lm][v.id])+` <span class="text-xs text-neutral-400">${mlabel(lm)}</span>`:'–'}</td>
+ <td class="px-4 py-2.5 text-right text-xs space-x-3 whitespace-nowrap"><button data-act="edit" data-id="${esc(v.id)}" class="underline">Edit</button><button data-act="mergeOpen" data-id="${esc(v.id)}" class="underline">Merge</button><button data-act="delModel" data-id="${esc(v.id)}" class="underline text-rose-600">Delete</button></td></tr>`}).join('')||'<tr><td colspan="6" class="text-center py-8 text-neutral-500">No models match.</td></tr>'}</tbody></table></div>${aliasSection()}`}
+function editRow(id){const v=DATA.vehicles.find(x=>x.id===id),tr=$(`#pane tr[data-vid="${CSS.escape(id)}"]`);if(!tr)return;
+ tr.innerHTML=`<td class="px-4 py-2"><input id="edM" class="sl !mt-0" value="${esc(v.mfg)}"></td><td class="px-4 py-2"><input id="edN" class="sl !mt-0" value="${esc(v.model)}"></td><td class="px-4 py-2 text-xs text-neutral-500" colspan="3">ID stays <code>${esc(v.id)}</code> so history is kept</td><td class="px-4 py-2 text-right text-xs space-x-3"><button data-act="saveEdit" data-id="${esc(id)}" class="underline font-semibold">Save</button><button data-act="cancelEdit" class="underline">Cancel</button></td>`}
+function saveEdit(id){const a=$('#edM').value.trim().replace(/\s+/g,' '),b=$('#edN').value.trim().replace(/\s+/g,' ');if(!a||!b)return toast('Both fields are required',1);
+ if(DATA.vehicles.some(v=>v.id!==id&&vkey(v.mfg,v.model)===vkey(a,b)))return toast('Another model already has that name',1);
+ const v=DATA.vehicles.find(x=>x.id===id);v.mfg=a;v.model=b;markDirty();renderDataset();toast('Renamed')}
+function mergeOpen(id){const v=DATA.vehicles.find(x=>x.id===id);modal('Merge '+v.mfg+' '+v.model,`<div class="space-y-3"><p class="text-sm text-neutral-500">Moves this model’s sales into another model, then removes it. If both have a value for a month, the target’s value is kept.</p>
+ <label class="block text-xs font-semibold uppercase tracking-wider text-neutral-500">Merge into<select id="mgT" class="sl">${sortedVehicles().filter(x=>x.id!==id).map(x=>`<option value="${esc(x.id)}">${esc(x.mfg)} ${esc(x.model)}</option>`).join('')}</select></label><div class="flex justify-end"><button data-act="mergeDo" data-id="${esc(id)}" class="pb">Merge</button></div></div>`)}
+function mergeDo(id){const t=$('#mgT').value;if(!t)return;let moved=0,kept=0;months().forEach(m=>{const s=DATA.sales[m];if(s[id]!=null){if(s[t]==null){s[t]=s[id];moved++}else kept++;delete s[id]}});
+ Object.keys(DATA.aliases||{}).forEach(k=>{if(DATA.aliases[k]===id)DATA.aliases[k]=t});DATA.vehicles=DATA.vehicles.filter(v=>v.id!==id);closeModal();markDirty();renderDataset();toast(`Merged: ${moved} months moved${kept?`, ${kept} kept target’s value`:''}`)}
+function delModel(id){const v=DATA.vehicles.find(x=>x.id===id),n=months().filter(m=>DATA.sales[m][id]!=null).length;
+ if(!confirm(`Delete ${v.mfg} ${v.model} and its ${n} month(s) of sales?`))return;months().forEach(m=>{delete DATA.sales[m][id];if(!Object.keys(DATA.sales[m]).length)delete DATA.sales[m]});
+ Object.keys(DATA.aliases||{}).forEach(k=>{if(DATA.aliases[k]===id)delete DATA.aliases[k]});DATA.vehicles=DATA.vehicles.filter(x=>x.id!==id);markDirty();renderDataset();toast('Deleted')}
+function delMonth(m){if(!confirm(`Delete all ${Object.keys(DATA.sales[m]).length} values for ${mlabel(m,1)}?`))return;delete DATA.sales[m];markDirty();renderDataset();toast('Month deleted')}
+
+// ---- Checks ----
+function computeIssues(){if(!DATA)return[];const ms=months(),V=Object.fromEntries(DATA.vehicles.map(v=>[v.id,v])),nm=id=>V[id]?V[id].mfg+' '+V[id].model:id,I=[];
+ ms.forEach((m,i)=>{if(i&&nextMonth(ms[i-1])===m)Object.entries(DATA.sales[m]).forEach(([id,v])=>{const o=DATA.sales[ms[i-1]][id];if(o!=null&&o>=200&&Math.abs(v-o)/o>.6)I.push({t:'Big swing',title:nm(id)+' · '+mlabel(m,1),detail:`${fmt(o)} → ${fmt(v)} (${v>o?'+':''}${Math.round((v-o)/o*100)}% vs ${mlabel(ms[i-1])})`,m,q:nm(id)})})});
+ const sig={};DATA.vehicles.forEach(v=>{const s=ms.map(m=>DATA.sales[m][v.id]);if(s.filter(x=>x>0).length>=2)(sig[s.join('|')]=sig[s.join('|')]||[]).push(v.id)});
+ Object.values(sig).filter(a=>a.length>1).forEach(a=>I.push({t:'Identical numbers',title:a.map(nm).join(' & '),detail:'Same value in every month — likely a copy-paste slip',q:nm(a[0])}));
+ DATA.vehicles.forEach(v=>{const have=ms.filter(m=>DATA.sales[m][v.id]!=null);if(have.length>1){const miss=ms.filter(m=>m>have[0]&&m<have[have.length-1]&&DATA.sales[m][v.id]==null);if(miss.length)I.push({t:'Missing month',title:nm(v.id),detail:'No value for '+miss.map(x=>mlabel(x)).join(', '),m:miss[0],q:nm(v.id)})}if(!have.length)I.push({t:'No data',title:nm(v.id),detail:'Model has no sales in any month',q:nm(v.id)})});
+ if(ms.length>=3){const c=ms.map(m=>Object.keys(DATA.sales[m]).length),med=[...c].sort((a,b)=>a-b)[Math.floor(c.length/2)];ms.forEach((m,i)=>{if(c[i]<.7*med)I.push({t:'Incomplete month',title:mlabel(m,1),detail:`Only ${c[i]} models have values (typical: ${med})`,m})})}
+ return I}
+function renderChecks(){const I=computeIssues();if(!I.length){$('#pane').innerHTML='<div class="card p-8 text-center"><div class="text-2xl">✓</div><p class="font-semibold mt-1">All clear</p><p class="text-sm text-neutral-500">No big swings, repeated numbers, gaps or incomplete months found.</p></div>';return}
+ const g={};I.forEach((x,i)=>(g[x.t]=g[x.t]||[]).push([x,i]));
+ $('#pane').innerHTML='<p class="text-sm text-neutral-500">These are suggestions to double-check, not errors. Swings over 60% month on month are flagged for models selling 200+ units.</p>'+Object.entries(g).map(([t,a])=>`<div class="card overflow-hidden"><div class="px-4 py-2.5 th flex justify-between"><span>${t}</span><span>${a.length}</span></div><div class="divide-y divide-neutral-200 dark:divide-neutral-800">${a.slice(0,40).map(([x,i])=>`<div class="px-4 py-2.5 flex items-center justify-between gap-3 text-sm"><div class="min-w-0"><div class="font-medium truncate">${esc(x.title)}</div><div class="text-xs text-neutral-500">${esc(x.detail)}</div></div><button data-act="review" data-i="${i}" class="b2 shrink-0">Review</button></div>`).join('')}${a.length>40?`<div class="px-4 py-2 text-xs text-neutral-500">+ ${a.length-40} more</div>`:''}</div></div>`).join('')}
+function review(i){const x=computeIssues()[i];if(!x)return;if(x.m){setMonth(x.m);go('add')}else{DQ=x.q||'';go('set')}}
+
+// ---- Export ----
+function exportJSON(){DATA.lastUpdated=today();const ms=months(),known=['schemaVersion','lastUpdated','unit','vehicles','sales','aliases'],rest=Object.keys(DATA).filter(k=>!known.includes(k)),al=Object.entries(DATA.aliases||{});
+ return'{\n  "schemaVersion": '+(DATA.schemaVersion||1)+',\n  "lastUpdated": "'+DATA.lastUpdated+'",\n  "unit": '+JSON.stringify(DATA.unit||'units')+',\n  "vehicles": [\n'+DATA.vehicles.map(v=>'    '+JSON.stringify(v)).join(',\n')+'\n  ],\n  "sales": {\n'+
+  ms.map(m=>'    "'+m+'": '+JSON.stringify(Object.fromEntries(Object.entries(DATA.sales[m]).sort((a,b)=>a[0]<b[0]?-1:1)))).join(',\n')+'\n  }'+(al.length?',\n  "aliases": {\n'+al.map(([k,v])=>'    '+JSON.stringify(k)+': '+JSON.stringify(v)).join(',\n')+'\n  }':'')+rest.map(k=>',\n  '+JSON.stringify(k)+': '+JSON.stringify(DATA[k])).join('')+'\n}\n'}
+// ---- Events ----
+const ACT={
+ load:()=>$('#fLoad').click(),resume:()=>{try{setData(normalize(JSON.parse(localStorage.getItem(DKEY))),true)}catch(e){toast('Draft could not be read',1)}},
+ startEmpty:()=>setData({schemaVersion:1,lastUpdated:today(),unit:'units',vehicles:[],sales:{}},false),
+ download:async()=>{const txt=exportJSON();let dl=null;try{dl=window.claude?await window.claude.use('downloads'):null}catch(e){}
+  if(dl){try{await dl.save({filename:'data.json',data:txt});dirty=false;renderBar();toast('Saved data.json')}catch(e){if(!e||e.code!=='declined')toast('Could not save — use Copy JSON instead',1)}return}
+  const bl=new Blob([txt],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='data.json';a.click();dirty=false;renderBar();toast('Downloaded data.json')},
+ copy:async()=>{try{await navigator.clipboard.writeText(exportJSON());toast('JSON copied to clipboard')}catch(e){toast('Copy failed — use Download instead',1)}},
+ togYear:a=>{const y=a.dataset.y;YO[y]=!yOpen(y);renderDataset()},closeModal,addModelOpen,addModel,pasteOpen,pasteApply,applyMonth,
+ prevCopy:()=>{const r=prevRef(AM.month);if(!r)return;AM.vals=Object.fromEntries(Object.entries(DATA.sales[r]).map(([k,v])=>[k,String(v)]));renderAdd()},
+ clearCells:()=>{AM.vals={};renderAdd()},impPick:()=>$('#fImp').click(),tpl:async()=>{try{await navigator.clipboard.writeText('Manufacturer,Model,Period,Units\nHyundai,Creta,2026-10,18200\nTata,Punch,2026-10,21000');toast('Template copied — paste it into the box or a spreadsheet')}catch(e){toast('Copy failed',1)}},impMerge,
+ edit:a=>editRow(a.dataset.id),cancelEdit:renderDataset,saveEdit:a=>saveEdit(a.dataset.id),mergeOpen:a=>mergeOpen(a.dataset.id),mergeDo:a=>mergeDo(a.dataset.id),delModel:a=>delModel(a.dataset.id),
+ editMonth:a=>{setMonth(a.dataset.m);go('add')},delMonth:a=>delMonth(a.dataset.m),review:a=>review(+a.dataset.i),resGo,resCancel:()=>{RES=null;closeModal()},resAll:a=>$$('#resBody select').forEach(x=>x.value=a.dataset.v),delAlias:a=>{delete DATA.aliases[a.dataset.k];markDirty();renderDataset()}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t&&DATA)return go(t.dataset.tab);const a=e.target.closest('[data-act]');if(a&&ACT[a.dataset.act])ACT[a.dataset.act](a,e)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){RES=null;closeModal()}});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.impm){const[p,k]=t.dataset.impm.split('|');IMP.cfg[p][k]=t.checked;renderImpOut()}});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.classList.contains('cell')){AM.vals[t.dataset.id]=t.value;updAm()}else if(t.id==='amQ'){AQ=t.value;filterAdd()}else if(t.id==='dsQ'){DQ=t.value;const p=t.selectionStart;renderDataset();const n=$('#dsQ');n.focus();n.setSelectionRange(p,p)}
+ else if(t.id==='impText'){importParse(t.value);renderImpOut()}});
+document.addEventListener('change',e=>{if(e.target.id==='amMonth'&&e.target.value){setMonth(e.target.value);renderAdd()}});
+$('#fLoad').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(dirty&&!confirm('You have unsaved changes. Load a new file anyway?'))return;
+ readFile(f,t=>{try{setData(normalize(JSON.parse(t)),false);toast(`Loaded ${DATA.vehicles.length} models, ${months().length} months`)}catch(err){toast(err.message||'Could not read file',1)}})};
+$('#fImp').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)readFile(f,t=>{importParse(t);renderImport()})};
+document.addEventListener('dragover',e=>{if($('#impZone'))e.preventDefault()});
+document.addEventListener('drop',e=>{if(!$('#impZone')||!e.dataTransfer.files[0])return;e.preventDefault();readFile(e.dataTransfer.files[0],t=>{importParse(t);renderImport()})});
+
+window.BLD={normalize,setData};
+})();
+function refreshViews(){
+ VMAP=Object.fromEntries(DATA.vehicles.map(v=>[v.id,v]));ALLM=Object.keys(DATA.sales).sort();buildMonthSelect();
+ $('#upd').textContent=DATA.lastUpdated||'–';
+ $('#hList').innerHTML=DATA.vehicles.map(v=>`<option value="${esc(v.mfg)} ${esc(v.model)}">`).join('');
+ const o=ALLM.map(m=>`<option value="${m}">${mlabel(m,1)}</option>`).join('');$('#cFrom').innerHTML=o;$('#cTo').innerHTML=o;
+ if(!ALLM.includes(C.from))C.from=ALLM[0]||'';if(!ALLM.includes(C.to))C.to=ALLM[ALLM.length-1]||'';$('#cFrom').value=C.from;$('#cTo').value=C.to;
+ C.items=C.items.filter(i=>i.startsWith('b:')?DATA.vehicles.some(v=>'b:'+v.mfg===i):VMAP[i]);
+ if(!C.items.length&&ALLM.length){const l=ALLM[ALLM.length-1];C.items=[...DATA.vehicles].sort((a,b)=>(val(b.id,l)||0)-(val(a.id,l)||0)).slice(0,3).map(v=>v.id)}
+ show(cur,1);render();renderHome();renderCompare();if(cur==='vehicle')renderVehicle()}
+window.onDataChanged=refreshViews;
+async function loadData(){
+ try{const r=await fetch('data/data.json',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);BLD.setData(BLD.normalize(await r.json()),false)}
+ catch(e){$('#emptyMsg').textContent='Could not load data/data.json ('+(e.message||e)+'). Put the file at data/data.json next to this page, or load the file manually.';refreshViews()}}
+initCompare();show('home');loadData();
+</script>
+</body>
+</html>
