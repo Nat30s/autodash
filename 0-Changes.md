@@ -12,7 +12,8 @@
 #### Changes List
 - Added tabs for cars/bikes section on top
 - Code check for errors in ide
-- Mobile responsive start
+- Mobile responsive fixed
+- Removed copy csv button from compare page
 
 - - -
 
