@@ -3,7 +3,10 @@
 
 
 
-# v1c
+
+- - -
+
+# v1c,d
 - Date - 13 Nov 26
 - AI Used - Claude
 #### Changes List
