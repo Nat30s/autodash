@@ -1,6 +1,26 @@
 
 
 
+
+
+# v1c
+- Date - 13 Nov 26
+- AI Used - Claude
+#### Changes List
+- Added tabs for cars/bikes section on top
+- Code check for errors in ide
+- Mobile responsive start
+
+- - -
+
+# v1
+- Date - 11 Nov 26
+- AI Used - Claude
+#### Changes List
+- Small Optimizations
+
+- - -
+
 # v0 
 - Date - 10 Nov 26
 - AI Used - Claude
