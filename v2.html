@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AutoDash – Live v2a</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Inter,system-ui,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.bottom-0{bottom:0}.left-0{left:0}.right-0{right:0}.top-0{top:0}.top-full{top:100%}.z-20{z-index:20}.z-30{z-index:30}.order-1{order:1}.order-2{order:2}.order-3{order:3}.order-4{order:4}.order-5{order:5}.col-span-2{grid-column:span 2/span 2}.mx-auto{margin-left:auto;margin-right:auto}.\!mt-0{margin-top:0!important}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.ml-1{margin-left:.25rem}.ml-auto{margin-left:auto}.mt-1{margin-top:.25rem}.mt-1\.5{margin-top:.375rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.table{display:table}.grid{display:grid}.contents{display:contents}.hidden{display:none}.h-1\.5{height:.375rem}.h-2{height:.5rem}.h-2\.5{height:.625rem}.h-28{height:7rem}.h-36{height:9rem}.h-4{height:1rem}.h-9{height:2.25rem}.h-full{height:100%}.\!w-auto{width:auto!important}.w-12{width:3rem}.w-14{width:3.5rem}.w-16{width:4rem}.w-2{width:.5rem}.w-2\.5{width:.625rem}.w-28{width:7rem}.w-32{width:8rem}.w-36{width:9rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-9{width:2.25rem}.w-full{width:100%}.w-px{width:1px}.min-w-0{min-width:0}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-not-allowed{cursor:not-allowed}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:.125rem}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-x-3{-moz-column-gap:.75rem;column-gap:.75rem}.gap-y-2{row-gap:.5rem}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-2\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.625rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.625rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem*var(--tw-space-y-reverse))}.divide-y>:not([hidden])~:not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px*(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px*var(--tw-divide-y-reverse))}.divide-neutral-200>:not([hidden])~:not([hidden]){--tw-divide-opacity:1;border-color:rgb(229 229 229/var(--tw-divide-opacity,1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-sm{border-radius:.125rem}.rounded-xl{border-radius:.75rem}.rounded-t{border-top-left-radius:.25rem;border-top-right-radius:.25rem}.border{border-width:1px}.border-x{border-left-width:1px;border-right-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-neutral-100{--tw-border-opacity:1;border-color:rgb(245 245 245/var(--tw-border-opacity,1))}.border-neutral-200{--tw-border-opacity:1;border-color:rgb(229 229 229/var(--tw-border-opacity,1))}.\!bg-neutral-900{--tw-bg-opacity:1!important;background-color:rgb(23 23 23/var(--tw-bg-opacity,1))!important}.bg-amber-100{--tw-bg-opacity:1;background-color:rgb(254 243 199/var(--tw-bg-opacity,1))}.bg-black\/30{background-color:rgba(0,0,0,.3)}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229/var(--tw-bg-opacity,1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-neutral-100{--tw-bg-opacity:1;background-color:rgb(245 245 245/var(--tw-bg-opacity,1))}.bg-neutral-200{--tw-bg-opacity:1;background-color:rgb(229 229 229/var(--tw-bg-opacity,1))}.bg-neutral-300{--tw-bg-opacity:1;background-color:rgb(212 212 212/var(--tw-bg-opacity,1))}.bg-neutral-400{--tw-bg-opacity:1;background-color:rgb(163 163 163/var(--tw-bg-opacity,1))}.bg-neutral-50{--tw-bg-opacity:1;background-color:rgb(250 250 250/var(--tw-bg-opacity,1))}.bg-neutral-800{--tw-bg-opacity:1;background-color:rgb(38 38 38/var(--tw-bg-opacity,1))}.bg-neutral-900{--tw-bg-opacity:1;background-color:rgb(23 23 23/var(--tw-bg-opacity,1))}.bg-rose-100{--tw-bg-opacity:1;background-color:rgb(255 228 230/var(--tw-bg-opacity,1))}.bg-rose-500{--tw-bg-opacity:1;background-color:rgb(244 63 94/var(--tw-bg-opacity,1))}.bg-transparent{background-color:transparent}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-white\/90{background-color:hsla(0,0%,100%,.9)}.p-1{padding:.25rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.\!px-2{padding-left:.5rem!important;padding-right:.5rem!important}.\!py-0\.5{padding-top:.125rem!important;padding-bottom:.125rem!important}.px-1{padding-left:.25rem;padding-right:.25rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\.5{padding-left:.875rem;padding-right:.875rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-2{padding-bottom:.5rem}.pl-11{padding-left:2.75rem}.pl-2{padding-left:.5rem}.pr-4{padding-right:1rem}.pt-2{padding-top:.5rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.align-middle{vertical-align:middle}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.normal-case{text-transform:none}.tracking-tight{letter-spacing:-.025em}.tracking-wider{letter-spacing:.05em}.\!text-neutral-900{--tw-text-opacity:1!important;color:rgb(23 23 23/var(--tw-text-opacity,1))!important}.\!text-white{--tw-text-opacity:1!important;color:rgb(255 255 255/var(--tw-text-opacity,1))!important}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9/var(--tw-text-opacity,1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105/var(--tw-text-opacity,1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87/var(--tw-text-opacity,1))}.text-neutral-300{--tw-text-opacity:1;color:rgb(212 212 212/var(--tw-text-opacity,1))}.text-neutral-400{--tw-text-opacity:1;color:rgb(163 163 163/var(--tw-text-opacity,1))}.text-neutral-500{--tw-text-opacity:1;color:rgb(115 115 115/var(--tw-text-opacity,1))}.text-neutral-600{--tw-text-opacity:1;color:rgb(82 82 82/var(--tw-text-opacity,1))}.text-neutral-800{--tw-text-opacity:1;color:rgb(38 38 38/var(--tw-text-opacity,1))}.text-neutral-900{--tw-text-opacity:1;color:rgb(23 23 23/var(--tw-text-opacity,1))}.text-rose-400{--tw-text-opacity:1;color:rgb(251 113 133/var(--tw-text-opacity,1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72/var(--tw-text-opacity,1))}.text-rose-700{--tw-text-opacity:1;color:rgb(190 18 60/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-60{opacity:.6}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.shadow-sm,.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:bg-neutral-100:hover{--tw-bg-opacity:1;background-color:rgb(245 245 245/var(--tw-bg-opacity,1))}.hover\:bg-neutral-50:hover{--tw-bg-opacity:1;background-color:rgb(250 250 250/var(--tw-bg-opacity,1))}.hover\:text-neutral-900:hover{--tw-text-opacity:1;color:rgb(23 23 23/var(--tw-text-opacity,1))}.hover\:text-rose-600:hover{--tw-text-opacity:1;color:rgb(225 29 72/var(--tw-text-opacity,1))}.hover\:underline:hover{text-decoration-line:underline}.disabled\:opacity-30:disabled{opacity:.3}.dark\:divide-neutral-800:is(.dark *)>:not([hidden])~:not([hidden]){--tw-divide-opacity:1;border-color:rgb(38 38 38/var(--tw-divide-opacity,1))}.dark\:border-neutral-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(64 64 64/var(--tw-border-opacity,1))}.dark\:border-neutral-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(38 38 38/var(--tw-border-opacity,1))}.dark\:\!bg-white:is(.dark *){--tw-bg-opacity:1!important;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))!important}.dark\:bg-amber-500\/15:is(.dark *){background-color:rgba(245,158,11,.15)}.dark\:bg-emerald-500\/15:is(.dark *){background-color:rgba(16,185,129,.15)}.dark\:bg-neutral-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(64 64 64/var(--tw-bg-opacity,1))}.dark\:bg-neutral-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(38 38 38/var(--tw-bg-opacity,1))}.dark\:bg-neutral-800\/50:is(.dark *){background-color:rgba(38,38,38,.5)}.dark\:bg-neutral-900:is(.dark *){--tw-bg-opacity:1;background-color:rgb(23 23 23/var(--tw-bg-opacity,1))}.dark\:bg-neutral-950\/50:is(.dark *){background-color:hsla(0,0%,4%,.5)}.dark\:bg-neutral-950\/60:is(.dark *){background-color:hsla(0,0%,4%,.6)}.dark\:bg-neutral-950\/90:is(.dark *){background-color:hsla(0,0%,4%,.9)}.dark\:bg-rose-500\/15:is(.dark *){background-color:rgba(244,63,94,.15)}.dark\:bg-white:is(.dark *){--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.dark\:\!text-neutral-900:is(.dark *){--tw-text-opacity:1!important;color:rgb(23 23 23/var(--tw-text-opacity,1))!important}.dark\:text-amber-400:is(.dark *){--tw-text-opacity:1;color:rgb(251 191 36/var(--tw-text-opacity,1))}.dark\:text-emerald-400:is(.dark *){--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.dark\:text-neutral-200:is(.dark *){--tw-text-opacity:1;color:rgb(229 229 229/var(--tw-text-opacity,1))}.dark\:text-neutral-400:is(.dark *){--tw-text-opacity:1;color:rgb(163 163 163/var(--tw-text-opacity,1))}.dark\:text-neutral-700:is(.dark *){--tw-text-opacity:1;color:rgb(64 64 64/var(--tw-text-opacity,1))}.dark\:text-neutral-900:is(.dark *){--tw-text-opacity:1;color:rgb(23 23 23/var(--tw-text-opacity,1))}.dark\:text-rose-400:is(.dark *){--tw-text-opacity:1;color:rgb(251 113 133/var(--tw-text-opacity,1))}.dark\:text-white:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.dark\:hover\:bg-neutral-800:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(38 38 38/var(--tw-bg-opacity,1))}.dark\:hover\:bg-neutral-800\/40:hover:is(.dark *){background-color:rgba(38,38,38,.4)}.dark\:hover\:bg-neutral-800\/50:hover:is(.dark *){background-color:rgba(38,38,38,.5)}.dark\:hover\:text-white:hover:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}@media (min-width:640px){.sm\:block{display:block}.sm\:table-cell{display:table-cell}.sm\:w-80{width:20rem}.sm\:w-auto{width:auto}.sm\:flex-none{flex:none}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:p-8{padding:2rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}}@media (min-width:1024px){.lg\:sticky{position:sticky}.lg\:left-auto{left:auto}.lg\:order-none{order:0}.lg\:col-span-2{grid-column:span 2/span 2}.lg\:ml-0{margin-left:0}.lg\:flex{display:flex}.lg\:h-14{height:3.5rem}.lg\:w-\[22rem\]{width:22rem}.lg\:w-auto{width:auto}.lg\:min-w-\[9rem\]{min-width:9rem}.lg\:flex-none{flex:none}.lg\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.lg\:grid-cols-6{grid-template-columns:repeat(6,minmax(0,1fr))}.lg\:flex-nowrap{flex-wrap:nowrap}.lg\:items-center{align-items:center}.lg\:gap-2{gap:.5rem}.lg\:gap-6{gap:1.5rem}.lg\:py-0{padding-top:0;padding-bottom:0}}</style>
+<style>
+.navbtn{white-space:nowrap;flex-shrink:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:Inter,system-ui,sans-serif;background:#fafafa}
+html.dark body{background:#0a0a0a}
+.num{font-variant-numeric:tabular-nums}
+.b2{border:1px solid #e5e5e5;border-radius:.5rem;padding:.4rem .75rem;font-size:.875rem}.b2:hover{background:#f5f5f5}
+html.dark .b2{border-color:#404040}html.dark .b2:hover{background:#262626}
+.sl{border:1px solid #e5e5e5;border-radius:.5rem;padding:.5rem .6rem;font-size:.875rem;width:100%;margin-top:.25rem;background:#fff;text-transform:none;font-weight:400;letter-spacing:0;color:inherit}
+html.dark .sl{background:#171717;border-color:#404040}
+.card{border:1px solid #e5e5e5;border-radius:1rem;background:#fff}html.dark .card{background:#171717;border-color:#262626}
+.b2{cursor:pointer}.pb{background:#171717;color:#fff;border-radius:.5rem;padding:.45rem .9rem;font-size:.875rem;font-weight:600;cursor:pointer}html.dark .pb{background:#fff;color:#171717}.pb:disabled{opacity:.4;cursor:not-allowed}
+.sl.chg{border-color:#3b82f6}.sl.warn{border-color:#f59e0b;background:#fffbeb}html.dark .sl.warn{background:#2a2108}.sl.bad{border-color:#e11d48;background:#fff1f2}html.dark .sl.bad{background:#2a0d14}
+.th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#737373;background:#fafafa;border-bottom:1px solid #e5e5e5}html.dark .th{background:#0a0a0a99;border-color:#262626}
+.pill{display:inline-block;padding:.1rem .55rem;border-radius:9999px;font-size:.7rem;font-weight:600}
+</style>
+</head>
+<body class="text-neutral-800 dark:text-neutral-200 antialiased">
+
+<header class="lg:sticky top-0 z-20 bg-white/90 dark:bg-neutral-950/90 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
+  <div class="max-w-6xl mx-auto px-4 py-2 lg:py-0 lg:h-14 flex flex-wrap lg:flex-nowrap items-center justify-between gap-x-3 gap-y-2">
+    <div class="contents lg:flex lg:items-center lg:gap-6">
+      <div id="brand" class="order-1 lg:order-none font-bold tracking-tight text-neutral-900 dark:text-white cursor-pointer">AutoDash <span class="ml-1 text-xs px-2 py-0.5 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold align-middle">Live v2a</span></div>
+      <nav class="order-4 w-full lg:w-auto lg:order-none flex gap-1 text-sm font-medium overflow-x-auto">
+        <button data-view="home" class="navbtn px-3 py-1.5 rounded-lg">Home</button>
+        <button data-view="dash" class="navbtn px-3 py-1.5 rounded-lg">All models</button>
+        <button data-view="compare" class="navbtn px-3 py-1.5 rounded-lg">Compare</button>
+              </nav>
+    </div>
+    <div class="contents lg:flex lg:items-center lg:gap-2">
+      <select id="month" style="display:none" class="text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-2.5 py-1.5"></select>
+      <div id="segBar" class="order-2 ml-auto lg:order-none lg:ml-0 flex items-center gap-0.5 p-1 rounded-xl border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"><button data-seg="cars">Cars</button><button data-seg="bikes">Bikes</button></div>
+      <div id="pk" class="relative order-5 w-full lg:w-auto lg:order-none"><div class="flex items-center rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 overflow-hidden"><button id="pkPrev" class="px-3 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30" title="Earlier (←)">‹</button><button id="pkBtn" class="flex-1 lg:flex-none px-3 py-1.5 text-sm font-semibold lg:min-w-[9rem] border-x border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800">–</button><button id="pkNext" class="px-3 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30" title="Later (→)">›</button></div><div id="pkPanel" class="hidden absolute left-0 right-0 lg:left-auto top-full mt-2 lg:w-[22rem] card p-3 shadow-xl z-30"></div></div>
+      <button id="theme" class="order-3 lg:order-none w-9 h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<div id="empty" class="hidden max-w-6xl mx-auto px-4 pt-6"><div class="card p-6 text-center space-y-3"><p id="emptyMsg" class="text-sm text-neutral-500">Loading…</p></div></div>
+
+<!-- ============ HOME ============ -->
+<main id="home" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <section class="card p-6 sm:p-8 space-y-3">
+    <div class="flex items-center justify-between gap-3">
+      <div id="hLab" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Monthly snapshot</div>
+      <button id="hCust" class="b2">⚙ Customize</button>
+    </div>
+    <h1 id="hHead" class="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white"></h1>
+    <p id="hSub" class="text-neutral-500 max-w-2xl"></p>
+    <div class="flex flex-col sm:flex-row gap-2 pt-2">
+      <input id="hSearch" list="hList" placeholder="Jump to a model, e.g. Swift…" class="sl !mt-0 sm:w-80"><datalist id="hList"></datalist>
+      <button id="hGoCmp" class="b2">Compare models</button><button id="hGoTbl" class="b2">Browse full table</button>
+    </div>
+  </section>
+  <div id="hSec" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+</main>
+<div id="cPanel" class="hidden fixed inset-0 z-30">
+  <div id="cBg" class="absolute inset-0 bg-black/30"></div>
+  <aside class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 p-5 overflow-y-auto space-y-4">
+    <div class="flex items-center justify-between"><h2 class="font-bold text-neutral-900 dark:text-white">Customize Home</h2><button id="cClose" class="b2">Done</button></div>
+    <div class="flex gap-2"><button data-pre="compact" class="b2 pre">Compact</button><button data-pre="full" class="b2 pre">Full</button><button data-pre="reset" class="b2 pre">Reset</button></div>
+    <div id="cList" class="divide-y divide-neutral-200 dark:divide-neutral-800"></div>
+    <p class="text-xs text-neutral-500">Show or hide sections and change their order. Saved in this browser.</p>
+  </aside>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<main id="dash" class="max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div class="flex items-end justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-neutral-900 dark:text-white">Car sales overview</h1>
+      <p class="text-sm text-neutral-500">Source: data/data.json · updated <span id="upd"></span><span id="dNote"></span></p>
+    </div>
+    
+  </div>
+
+  <div id="kpis" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+  <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+    <input id="q" placeholder="Search manufacturer or model…" class="w-full sm:w-80 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-transparent px-3 py-2">
+    <div class="flex items-center gap-2 text-xs">
+      <button id="colAll" class="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800">Collapse all</button>
+      <button id="expAll" class="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800">Expand all</button>
+      <span id="cnt" class="text-neutral-500 pl-2"></span>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800">
+          <tr>
+            <th class="text-left px-4 py-3">Manufacturer / Model</th>
+            <th class="text-right px-4 py-3" id="hCur"></th>
+            <th class="text-right px-4 py-3" id="hYoy"></th>
+            <th class="text-right px-4 py-3">YoY</th>
+            <th class="text-right px-4 py-3" id="hMom"></th>
+            <th class="text-right px-4 py-3">MoM</th>
+            <th class="text-right px-4 py-3">Share</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-xs text-neutral-500">Click a model to open its own page. “–” means no data, which is different from 0 sales.</p>
+</main>
+
+<!-- ============ VEHICLE ============ -->
+<main id="vehicle" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div><button id="vBack" class="text-sm text-neutral-500 hover:underline">← Back</button>
+      <h1 id="vTitle" class="text-xl font-bold text-neutral-900 dark:text-white mt-1"></h1></div>
+    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+      <button id="vPrev" class="b2">←</button>
+      <select id="vSel" class="sl !w-auto !mt-0 min-w-0 flex-1 sm:flex-none"></select>
+      <button id="vNext" class="b2">→</button>
+      <button id="vCmp" class="px-3 py-2 text-sm rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold">Compare this model</button>
+    </div>
+  </div>
+  <div id="vKpi" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+  <div class="card p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Sales by month</h2>
+      <div class="flex gap-1 text-xs"><button data-vt="matrix" class="vt b2">All years</button><button data-vt="year" class="vt b2">By year</button></div>
+    </div>
+    <div id="vTable" class="overflow-x-auto"></div>
+  </div>
+  <div class="card p-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Sales trend</h2><div id="vCMode" class="flex gap-1 text-xs"></div></div><div id="vChart"></div></div>
+</main>
+
+<!-- ============ COMPARE ============ -->
+<main id="compare" class="hidden max-w-6xl mx-auto px-4 py-6 space-y-5">
+  <div>
+    <h1 class="text-xl font-bold text-neutral-900 dark:text-white">Compare models</h1>
+    <p class="text-sm text-neutral-500">Pick up to 6 models or brands, then compare by month, quarter, half-year or year.</p>
+  </div>
+  <div class="card p-4 space-y-4">
+    <div class="flex flex-wrap items-center gap-2"><div id="cChips" class="flex flex-wrap gap-2"></div><select id="cAdd" class="sl !w-auto !mt-0"></select></div>
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+      <label>Group by<select id="cGroup" class="sl"><option value="m">Monthly</option><option value="q" selected>Quarterly</option><option value="h">Half-yearly</option><option value="y">Yearly</option></select></label>
+      <label>Year type<select id="cFy" class="sl"><option value="1" selected>Financial (Apr–Mar)</option><option value="0">Calendar</option></select></label>
+      <label>From<select id="cFrom" class="sl"></select></label>
+      <label>To<select id="cTo" class="sl"></select></label>
+      <label>Metric<select id="cMetric" class="sl"><option value="units">Units</option><option value="share">Share %</option><option value="growth">Growth %</option></select></label>
+      <div class="flex items-end gap-2"><button id="cFlip" class="b2 w-full">Flip</button></div>
+    </div>
+  </div>
+  <div id="cTable" class="card overflow-x-auto"></div>
+  <p class="text-xs text-neutral-500">* partial period (fewer months of data than the period holds). Highlighted cell = best in that period. Growth is only shown between periods with the same number of months.</p>
+  <div class="card p-4"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Trend</h2><div id="cChart"></div></div>
+</main>
+
+
+
+
+<script>
+let DATA={schemaVersion:1,lastUpdated:'–',vehicles:[],sales:{}},VMAP={},ALLM=[];
+const SEGS={cars:{label:'Cars',noun:'cars',file:'data/cars.json'},bikes:{label:'Bikes',noun:'bikes',file:'data/bikes.json'}};
+let SEG=Object.hasOwn(SEGS,location.hash.slice(1))?location.hash.slice(1):'cars';const JF=()=>SEGS[SEG].file.split('/').pop();
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>new Intl.NumberFormat('en-IN').format(n);
+const mlabel=(k,long)=>new Date(k+'-01T00:00:00').toLocaleDateString('en-US',{month:'short',year:long?'numeric':'2-digit'});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const growth=(c,p)=>(c==null||p==null||p===0)?null:Math.round((c-p)/p*100);
+const pill=g=>g==null?'<span class="text-neutral-400">–</span>':
+ `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${g>0?'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400':g<0?'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400':'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'}">${g>0?'+':''}${g}%</span>`;
+const prevKeys=m=>{const[y,mo]=m.split('-').map(Number);return{mom:mo===1?`${y-1}-12`:`${y}-${String(mo-1).padStart(2,'0')}`,yoy:`${y-1}-${String(mo).padStart(2,'0')}`}};
+
+// ---- Theme ----
+function setTheme(t){document.documentElement.classList.toggle('dark',t==='dark');try{localStorage.setItem('ap_theme',t)}catch(e){}}
+try{setTheme(localStorage.getItem('ap_theme')||'light')}catch(e){}
+$('#theme').onclick=()=>setTheme(document.documentElement.classList.contains('dark')?'light':'dark');
+
+// ---- View + tab switching ----
+let cur='home',backTo='home';
+function show(v,keep){if(v==='vehicle'&&cur!=='vehicle')backTo=cur;cur=v;['home','dash','vehicle','compare'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==v||!ALLM.length));$('#empty').classList.toggle('hidden',!!ALLM.length);const nv=v==='vehicle'?'dash':v;
+ $$('.navbtn').forEach(b=>b.className='navbtn px-3 py-1.5 rounded-lg '+(b.dataset.view===nv?'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900':'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'));
+ $('#pk').classList.toggle('hidden',v!=='dash'&&v!=='home');if(!keep)window.scrollTo(0,0)}
+$$('.navbtn').forEach(b=>b.onclick=()=>show(b.dataset.view));
+
+// ---- Dashboard ----
+const collapsed={};
+function render(){
+ if(!ALLM.length)return;
+ const m=curMonth(),{mom,yoy}=prevKeys(m),q=$('#q').value.toLowerCase().trim();
+ $('#dNote').textContent=$('#month').value.includes(':')?' · table shows the latest month of the selected year':'';$('#hCur').textContent=mlabel(m)+' vol';$('#hMom').textContent=mlabel(mom)+' vol';$('#hYoy').textContent=mlabel(yoy)+' vol';
+ const g={};let T=0,TY=0,TM=0,models=[];
+ DATA.vehicles.filter(v=>(v.mfg+' '+v.model).toLowerCase().includes(q)).forEach(v=>{
+  const c=DATA.sales[m]?.[v.id],y=DATA.sales[yoy]?.[v.id],p=DATA.sales[mom]?.[v.id];
+  const r={...v,c,y,p,gy:growth(c,y),gm:growth(c,p)};models.push(r);
+  T+=c||0;TY+=y||0;TM+=p||0;
+  const o=g[v.mfg]??(g[v.mfg]={name:v.mfg,c:0,y:0,p:0,list:[]});o.c+=c||0;o.y+=y||0;o.p+=p||0;o.list.push(r)});
+ const groups=Object.values(g).sort((a,b)=>b.c-a.c);
+ const top=groups[0],tg=models.filter(x=>x.c>=500&&x.gy!=null).sort((a,b)=>b.gy-a.gy)[0];
+ const card=(l,v,s)=>`<div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4"><div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">${l}</div><div class="text-2xl font-bold mt-2 text-neutral-900 dark:text-white num truncate">${v}</div><div class="mt-1 text-xs text-neutral-500 flex items-center gap-2">${s}</div></div>`;
+ $('#kpis').innerHTML=card('Industry sales',fmt(T),pill(growth(T,TY))+' vs last year')+
+  card('Top manufacturer',top?esc(top.name):'–',top?`${fmt(top.c)} units · ${(top.c/T*100).toFixed(1)}%`:'')+
+  card('Top growth model',tg?esc(tg.model):'–',tg?pill(tg.gy)+' '+esc(tg.mfg)+' (≥500 units)':'')+
+  card('Month on month',fmt(T),pill(growth(T,TM))+' vs prev. month');
+ $('#cnt').textContent=models.length+' models';
+ $('#rows').innerHTML=groups.map(o=>{
+  const col=collapsed[o.name],sh=T?(o.c/T*100).toFixed(1):'0.0';
+  let h=`<tr class="bg-neutral-50 dark:bg-neutral-950/50 font-semibold cursor-pointer border-t border-neutral-200 dark:border-neutral-800" data-m="${esc(o.name)}">
+   <td class="px-4 py-3"><span class="inline-block w-4 text-neutral-400">${col?'▸':'▾'}</span>${esc(o.name)} <span class="ml-1 text-xs font-normal px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">${o.list.length} models</span></td>
+   <td class="px-4 py-3 text-right num">${fmt(o.c)}</td><td class="px-4 py-3 text-right num text-neutral-500">${fmt(o.y)}</td><td class="px-4 py-3 text-right">${pill(growth(o.c,o.y))}</td>
+   <td class="px-4 py-3 text-right num text-neutral-500">${fmt(o.p)}</td><td class="px-4 py-3 text-right">${pill(growth(o.c,o.p))}</td><td class="px-4 py-3 text-right num">${sh}%</td></tr>`;
+  if(!col)h+=o.list.sort((a,b)=>(b.c||0)-(a.c||0)).map(r=>`<tr data-v="${r.id}" class="cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/40 border-t border-neutral-100 dark:border-neutral-800">
+   <td class="pl-11 pr-4 py-2.5 font-medium">${esc(r.model)} <span class="text-neutral-400 text-xs">→</span></td>
+   <td class="px-4 py-2.5 text-right num font-semibold">${r.c==null?'–':fmt(r.c)}</td><td class="px-4 py-2.5 text-right num text-neutral-500">${r.y==null?'–':fmt(r.y)}</td><td class="px-4 py-2.5 text-right">${pill(r.gy)}</td>
+   <td class="px-4 py-2.5 text-right num text-neutral-500">${r.p==null?'–':fmt(r.p)}</td><td class="px-4 py-2.5 text-right">${pill(r.gm)}</td>
+   <td class="px-4 py-2.5 text-right num text-neutral-500 text-xs">${T&&r.c?(r.c/T*100).toFixed(1):'0.0'}%</td></tr>`).join('');
+  return h}).join('')||'<tr><td colspan="7" class="text-center py-10 text-neutral-500">No models match.</td></tr>';
+ $$('#rows tr[data-m]').forEach(tr=>tr.onclick=()=>{collapsed[tr.dataset.m]=!collapsed[tr.dataset.m];render()});
+ $$('#rows tr[data-v]').forEach(tr=>tr.onclick=()=>openVehicle(tr.dataset.v));
+}
+function buildMonthSelect(){const months=Object.keys(DATA.sales).sort().reverse(),prev=$('#month').value;{const cy=[...new Set(months.map(k=>k.slice(0,4)))],fy=[...new Set(months.map(k=>+k.slice(0,4)+(+k.slice(5)>=4?1:0)))],cnt=n=>n>=12?'full year':n+' months';
+ $('#month').innerHTML='<optgroup label="Month">'+months.map(k=>`<option value="${k}">${mlabel(k,1)}</option>`).join('')+'</optgroup><optgroup label="Full year">'+
+  cy.map(y=>`<option value="cy:${y}">Calendar ${y} (${cnt(months.filter(k=>k.startsWith(y)).length)})</option>`).join('')+
+  fy.map(Y=>`<option value="fy:${String(Y).slice(2)}">FY${String(Y).slice(2)} Apr–Mar (${cnt(months.filter(k=>k>=(Y-1)+'-04'&&k<=Y+'-03').length)})</option>`).join('')+'</optgroup>'}if(prev&&[...$('#month').options].some(o=>o.value===prev))$('#month').value=prev}
+$('#month').onchange=()=>{render();renderHome()};$('#q').oninput=render;
+$('#colAll').onclick=()=>{DATA.vehicles.forEach(v=>collapsed[v.mfg]=true);render()};
+$('#expAll').onclick=()=>{Object.keys(collapsed).forEach(k=>collapsed[k]=false);render()};
+
+// ---- Shared helpers for new views ----
+const val=(id,m)=>DATA.sales[m]?.[id];
+const sumM=(id,ms)=>{let s=null;ms.forEach(m=>{const v=val(id,m);if(v!=null)s=(s||0)+v});return s};
+const COL=['currentColor','#2563eb','#059669','#d97706','#9333ea','#e11d48'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function lineSVG(labels,series,f){
+ const W=720,H=230,p={l:50,r:14,t:12,b:26},all=series.flatMap(s=>s.vals).filter(v=>v!=null);
+ if(!all.length)return'<p class="text-sm text-neutral-500">No data in range.</p>';
+ const mx=Math.max(...all)*1.1||1,mn=Math.min(0,...all),y=v=>p.t+(H-p.t-p.b)*(1-(v-mn)/(mx-mn)),x=i=>p.l+(W-p.l-p.r)*(labels.length>1?i/(labels.length-1):.5);
+ let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" opacity=".1"/><text x="${p.l-6}" y="${y(v)+3}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">${f(v)}</text>`}
+ const st=Math.ceil(labels.length/8);labels.forEach((l,i)=>{if(i%st===0)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">${l}</text>`});
+ series.forEach(s=>{let d='',open=false;s.vals.forEach((v,i)=>{if(v==null){open=false;return}d+=(open?'L':'M')+x(i)+' '+y(v);open=true;g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="${s.color}"/>`});g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.2"${s.dash?' stroke-dasharray="5 4" opacity=".6"':''}/>`});
+ return`<svg viewBox="0 0 ${W} ${H}" class="w-full text-neutral-900 dark:text-white">${g}</svg><div class="flex flex-wrap gap-4 text-xs text-neutral-500 mt-2">${series.map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full text-neutral-900 dark:text-white" style="background:${s.color}"></span>${esc(s.name)}</span>`).join('')}</div>`}
+const kcard=(l,v,s)=>`<div class="card p-4"><div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">${l}</div><div class="text-2xl font-bold mt-2 text-neutral-900 dark:text-white num truncate">${v}</div><div class="mt-1 text-xs text-neutral-500">${s}</div></div>`;
+
+// ---- Vehicle page ----
+let curV=null,vTab='matrix';
+function openVehicle(id){curV=id;show('vehicle');renderVehicle()}
+function renderVehicle(){
+ if(!VMAP[curV]&&DATA.vehicles.length)curV=DATA.vehicles[0].id;if(!VMAP[curV])return;
+ const v=VMAP[curV],ms=ALLM.filter(m=>val(curV,m)!=null),vals=ms.map(m=>val(curV,m));
+ $('#vTitle').textContent=v.mfg+' '+v.model;
+ $('#vSel').innerHTML=DATA.vehicles.map(x=>`<option value="${x.id}" ${x.id===curV?'selected':''}>${esc(x.mfg)} – ${esc(x.model)}</option>`).join('');
+ if(!ms.length){$('#vKpi').innerHTML='';$('#vTable').innerHTML='<p class="text-sm text-neutral-500">No sales data for this model yet.</p>';$('#vChart').innerHTML='';return}
+ const tot=vals.reduce((a,b)=>a+b,0),pk=Math.max(...vals),pm=ms[vals.indexOf(pk)],last=vals[vals.length-1];
+ $('#vKpi').innerHTML=kcard('Total tracked',fmt(tot),ms.length+' months of data')+kcard('Best month',fmt(pk),mlabel(pm,1))+kcard('Monthly average',fmt(Math.round(tot/ms.length)),'units / month')+kcard('Latest vs peak',pill(growth(last,pk)),mlabel(ms[ms.length-1],1));
+ $$('.vt').forEach(b=>b.className='vt b2 '+(b.dataset.vt===vTab?'!bg-neutral-900 !text-white dark:!bg-white dark:!text-neutral-900':''));
+ const th='text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800';
+ if(vTab==='matrix'){
+  const ys=[...new Set(ms.map(m=>m.slice(0,4)))];
+  let h=`<table class="w-full text-sm"><thead class="${th}"><tr><th class="text-left px-3 py-3">Year</th>${MN.map(n=>`<th class="text-right px-3 py-3">${n}</th>`).join('')}<th class="text-right px-3 py-3">Total</th><th class="text-right px-3 py-3" title="Compares matching months only">YoY</th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">`;
+  ys.forEach(y=>{let t=0,n=0,c=0,p=0;
+   const cells=MN.map((_,i)=>{const k=y+'-'+String(i+1).padStart(2,'0'),x=val(curV,k);if(x==null)return'<td class="px-3 py-2.5 text-right text-neutral-400">–</td>';
+    t+=x;n++;const pv=val(curV,(y-1)+'-'+String(i+1).padStart(2,'0'));if(pv!=null){c+=x;p+=pv}
+    return`<td class="px-3 py-2.5 text-right num" style="background:rgba(16,185,129,${(x/pk*.3).toFixed(2)})">${fmt(x)}</td>`}).join('');
+   h+=`<tr><td class="px-3 py-2.5 font-bold">${y}</td>${cells}<td class="px-3 py-2.5 text-right num font-bold">${fmt(t)}${n<12?'<span class="text-neutral-400" title="Partial year">*</span>':''}</td><td class="px-3 py-2.5 text-right">${pill(growth(c,p||null))}</td></tr>`});
+  $('#vTable').innerHTML=h+'</tbody></table><p class="text-xs text-neutral-500 mt-2">* partial year · YoY compares only months present in both years · shading = share of best month</p>';
+ }else yearAcc(v,ms);
+ vChartDraw(v,ms,vals);
+}
+$$('.vt').forEach(b=>b.onclick=()=>{vTab=b.dataset.vt;VC.mode=vTab==='year'?'year':'monthly';renderVehicle()});
+$('#vBack').onclick=()=>show(backTo);
+$('#vSel').onchange=e=>{curV=e.target.value;renderVehicle()};
+const step=d=>{const i=DATA.vehicles.findIndex(v=>v.id===curV);curV=DATA.vehicles[(i+d+DATA.vehicles.length)%DATA.vehicles.length].id;renderVehicle()};
+$('#vPrev').onclick=()=>step(-1);$('#vNext').onclick=()=>step(1);
+$('#vCmp').onclick=()=>{C.items=[curV,...DATA.vehicles.filter(v=>v.id!==curV).sort((a,b)=>(val(b.id,ALLM[ALLM.length-1])||0)-(val(a.id,ALLM[ALLM.length-1])||0)).slice(0,2).map(v=>v.id)];show('compare');renderCompare()};
+
+// ---- Compare view ----
+const C={items:[],group:'q',fy:true,from:'',to:'',metric:'units',flip:false};
+const itemIds=it=>it.startsWith('b:')?DATA.vehicles.filter(v=>v.mfg===it.slice(2)).map(v=>v.id):[it];
+const itemLabel=it=>it.startsWith('b:')?it.slice(2)+' (all)':VMAP[it].model;
+function bucket(m){const y=+m.slice(0,4),mo=+m.slice(5),Y=C.fy?(mo>=4?y+1:y):y,yl=C.fy?'FY'+String(Y).slice(2):''+Y,ix=C.fy?(mo>=4?mo-4:mo+8):mo-1;
+ if(C.group==='m')return{k:m,l:mlabel(m),n:1};
+ if(C.group==='q'){const q=Math.floor(ix/3)+1;return{k:Y+'-'+q,l:`Q${q} ${yl}`,n:3}}
+ if(C.group==='h'){const h=Math.floor(ix/6)+1;return{k:Y+'-'+h,l:`H${h} ${yl}`,n:6}}
+ return{k:''+Y,l:yl,n:12}}
+function renderCompare(){
+ if(!ALLM.length)return;
+ $('#cChips').innerHTML=C.items.map((it,i)=>`<span class="inline-flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-700 px-3 py-1 text-sm"><span class="w-2 h-2 rounded-full text-neutral-900 dark:text-white" style="background:${COL[i]}"></span>${esc(itemLabel(it))}<button data-rm="${i}" class="text-neutral-400 hover:text-rose-600">×</button></span>`).join('');
+ const brands=[...new Set(DATA.vehicles.map(v=>v.mfg))];
+ $('#cAdd').innerHTML='<option value="">+ Add model or brand…</option><optgroup label="Models">'+DATA.vehicles.filter(v=>!C.items.includes(v.id)).map(v=>`<option value="${v.id}">${esc(v.mfg)} ${esc(v.model)}</option>`).join('')+'</optgroup><optgroup label="Brands (all models)">'+brands.filter(b=>!C.items.includes('b:'+b)).map(b=>`<option value="b:${esc(b)}">${esc(b)} (all)</option>`).join('')+'</optgroup>';
+ $$('[data-rm]').forEach(b=>b.onclick=()=>{C.items.splice(+b.dataset.rm,1);renderCompare()});
+ const B=new Map();ALLM.filter(m=>m>=C.from&&m<=C.to).forEach(m=>{const b=bucket(m);if(!B.has(b.k))B.set(b.k,{...b,ms:[]});B.get(b.k).ms.push(m)});
+ const rows=[...B.values()];
+ const U=rows.map(r=>C.items.map(it=>{let s=null;itemIds(it).forEach(id=>{const x=sumM(id,r.ms);if(x!=null)s=(s||0)+x});return s}));
+ const T=rows.map(r=>DATA.vehicles.reduce((a,v)=>a+(sumM(v.id,r.ms)||0),0));
+ const G=rows.map((r,p)=>C.items.map((it,i)=>{const u=U[p][i];return C.metric==='units'?u:C.metric==='share'?(u==null||!T[p]?null:+(u/T[p]*100).toFixed(1)):(p&&rows[p].ms.length===rows[p-1].ms.length?growth(u,U[p-1][i]):null)}));
+ const units=C.metric==='units',sv=v=>v==null?'<span class="text-neutral-400">–</span>':units?fmt(v):C.metric==='share'?v+'%':pill(v);
+ const isBest=(p,i)=>{const a=G[p].filter(x=>x!=null);return G[p][i]!=null&&a.length>1&&G[p][i]===Math.max(...a)};
+ const cell=(p,i)=>`<td class="px-4 py-2.5 text-right num ${isBest(p,i)?'font-bold bg-neutral-100 dark:bg-neutral-800':''}">${sv(G[p][i])}</td>`;
+ const rl=rows.map(r=>esc(r.l)+(r.ms.length<r.n?`<span class="text-neutral-400" title="${r.ms.length} of ${r.n} months">*</span>`:'')),il=C.items.map(it=>esc(itemLabel(it)));
+ const sm=a=>a.reduce((x,y)=>x+(y||0),0),tdm='px-4 py-2.5 text-right num text-neutral-500';
+ let h=`<table class="w-full text-sm"><thead class="text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60 border-b border-neutral-200 dark:border-neutral-800"><tr><th class="text-left px-4 py-3">${C.flip?'Model':'Period'}</th>${(C.flip?rl:il).map(x=>`<th class="text-right px-4 py-3">${x}</th>`).join('')}${units?'<th class="text-right px-4 py-3">Total</th>':''}</tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">`;
+ if(!C.flip)rows.forEach((r,p)=>h+=`<tr><td class="px-4 py-2.5 font-medium">${rl[p]}</td>${C.items.map((_,i)=>cell(p,i)).join('')}${units?`<td class="${tdm}">${fmt(sm(G[p]))}</td>`:''}</tr>`);
+ else C.items.forEach((_,i)=>h+=`<tr><td class="px-4 py-2.5 font-medium">${il[i]}</td>${rows.map((r,p)=>cell(p,i)).join('')}${units?`<td class="${tdm}">${fmt(sm(G.map(x=>x[i])))}</td>`:''}</tr>`);
+ if(units)h+=`<tr class="font-semibold bg-neutral-50 dark:bg-neutral-950/50"><td class="px-4 py-3">Total</td>${(C.flip?G.map(x=>sm(x)):C.items.map((_,i)=>sm(G.map(x=>x[i])))).map(x=>`<td class="px-4 py-3 text-right num">${fmt(x)}</td>`).join('')}<td class="px-4 py-3 text-right num">${fmt(sm(G.map(x=>sm(x))))}</td></tr>`;
+ $('#cTable').innerHTML=rows.length&&C.items.length?h+'</tbody></table>':'<p class="p-8 text-center text-sm text-neutral-500">Add at least one model and a valid date range.</p>';
+ const f=units?n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n):n=>Math.round(n)+'%';
+ $('#cChart').innerHTML=rows.length?lineSVG(rows.map(r=>r.l),C.items.map((it,i)=>({name:itemLabel(it),vals:G.map(x=>x[i]),color:COL[i]})),f):'';
+}
+function initCompare(){
+ 
+ $('#cAdd').onchange=e=>{if(e.target.value&&C.items.length<6){C.items.push(e.target.value)}renderCompare()};
+ $('#cGroup').onchange=e=>{C.group=e.target.value;renderCompare()};$('#cFy').onchange=e=>{C.fy=e.target.value==='1';renderCompare()};
+ $('#cFrom').onchange=e=>{C.from=e.target.value;renderCompare()};$('#cTo').onchange=e=>{C.to=e.target.value;renderCompare()};
+ $('#cMetric').onchange=e=>{C.metric=e.target.value;renderCompare()};$('#cFlip').onclick=()=>{C.flip=!C.flip;renderCompare()};
+ }
+
+// ---- Home view ----
+const SHC=['#525252','#2563eb','#059669','#d97706','#9333ea','#e11d48','#a3a3a3'];
+const prevY=m=>(+m.slice(0,4)-1)+m.slice(4);
+function period(v){
+ if(v.startsWith('cy:')){const y=v.slice(3);return{label:'calendar year '+y,ms:ALLM.filter(m=>m.slice(0,4)===y),n:12,year:true}}
+ if(v.startsWith('fy:')){const yy=+v.slice(3),Y=2000+yy;return{label:'FY'+yy+' (Apr '+(Y-1)+' – Mar '+Y+')',ms:ALLM.filter(m=>m>=(Y-1)+'-04'&&m<=Y+'-03'),n:12,year:true}}
+ return{label:mlabel(v,1),ms:[v],n:1,year:false}}
+const curMonth=()=>{const v=$('#month').value;return v.includes(':')?period(v).ms.slice(-1)[0]:v};
+// ---- Home sections (customizable) ----
+const hsKey=()=>SEG==='cars'?'ap_home_v1e':'ap_home_v1e_'+SEG,SECS=[
+ {id:'kpi',t:'Key numbers',w:2,bare:1},{id:'fy',t:'Financial year summary',w:2},{id:'top',t:'Top 10 models'},{id:'brand',t:'Market share by brand'},
+ {id:'shift',t:'Share shift by brand',sub:'(vs same period last year)'},{id:'rank',t:'Rank movers',sub:'(vs last year)'},
+ {id:'up',t:'Biggest gainers',sub:'(YoY, minimum volume)'},{id:'down',t:'Biggest decliners',sub:'(YoY, minimum volume)'},
+ {id:'new',t:'New and discontinued'},{id:'rec',t:'Records'},{id:'trend',t:'Industry sales trend',w:2},
+ {id:'stack',t:'Sales by brand over time',w:2},{id:'heat',t:'Seasonality heatmap',sub:'(industry units by month)',w:2}];
+let HS;function loadHS(){HS={order:SECS.map(s=>s.id),hidden:{}};try{const x=JSON.parse(localStorage.getItem(hsKey()));if(x&&Array.isArray(x.order)){HS.hidden=x.hidden||{};HS.order=[...x.order.filter(i=>SECS.some(s=>s.id===i)),...SECS.map(s=>s.id).filter(i=>!x.order.includes(i))]}}catch(e){}}loadHS();
+const saveHS=()=>{try{localStorage.setItem(hsKey(),JSON.stringify(HS))}catch(e){}};
+const none=t=>`<p class="text-sm text-neutral-500">${t}</p>`,kfmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n);
+const spark=id=>{const vs=ALLM.map(x=>val(id,x)).filter(v=>v!=null).slice(-12);if(vs.length<2)return'';const mx=Math.max(...vs),mn=Math.min(...vs),r=mx-mn||1;return`<svg viewBox="0 0 60 18" class="w-14 h-4 text-neutral-400 hidden sm:block shrink-0"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="${vs.map((v,i)=>(i/(vs.length-1)*58+1).toFixed(1)+','+(16-(v-mn)/r*14).toFixed(1)).join(' ')}"/></svg>`};
+function stackSVG(labels,series){
+ const W=720,H=240,p={l:50,r:12,t:12,b:26},n=labels.length,tot=labels.map((_,i)=>series.reduce((a,s)=>a+(s.vals[i]||0),0)),mx=Math.max(...tot,1)*1.08,y=v=>p.t+(H-p.t-p.b)*(1-v/mx),bw=(W-p.l-p.r)/n*.68,x=i=>p.l+(W-p.l-p.r)*(i+.5)/n;let g='';
+ for(let k=0;k<=4;k++){const v=mx*k/4;g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" opacity=".1"/><text x="${p.l-6}" y="${y(v)+3}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">${kfmt(v)}</text>`}
+ labels.forEach((l,i)=>{let b=0;series.forEach(s=>{const v=s.vals[i]||0;g+=`<rect x="${x(i)-bw/2}" y="${y(b+v)}" width="${bw}" height="${Math.max(0,y(b)-y(b+v))}" fill="${s.color}"><title>${esc(s.name)}: ${fmt(v)}</title></rect>`;b+=v});if(i%Math.ceil(n/9)===0)g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".6">${l}</text>`});
+ return`<svg viewBox="0 0 ${W} ${H}" class="w-full text-neutral-900 dark:text-white">${g}</svg><div class="flex flex-wrap gap-4 text-xs text-neutral-500 mt-2">${series.map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background:${s.color}"></span>${esc(s.name)}</span>`).join('')}</div>`}
+function renderHome(){
+ if(!ALLM.length)return;
+ const P=period($('#month').value),m=P.ms[P.ms.length-1],k=prevKeys(m);
+ const R=DATA.vehicles.map(v=>{let c=0,cm=0,y=0,ya=0;P.ms.forEach(x=>{const a=val(v.id,x),b=val(v.id,prevY(x));if(a!=null)c+=a;if(b!=null)ya+=b;if(a!=null&&b!=null){cm+=a;y+=b}});return{...v,c,cm,y,ya,gy:y>0?growth(cm,y):null,p:P.year?null:val(v.id,k.mom)}});
+ const sm=f=>R.reduce((a,r)=>a+(f(r)||0),0),T=sm(r=>r.c),TY=sm(r=>r.ya),gy=growth(sm(r=>r.cm),sm(r=>r.y)||null),gm=P.year?null:growth(T,sm(r=>r.p)||null);
+ const tv=x=>DATA.vehicles.reduce((a,v)=>a+(val(v.id,x)||0),0);
+ const br={},brY={};R.forEach(r=>{br[r.mfg]=(br[r.mfg]||0)+r.c;brY[r.mfg]=(brY[r.mfg]||0)+r.ya});const bl=Object.entries(br).sort((a,b)=>b[1]-a[1]);
+ const top=[...R].sort((a,b)=>b.c-a.c),elig=R.filter(r=>r.c>=500*P.ms.length&&r.gy!=null).sort((a,b)=>b.gy-a.gy);
+ const dir=(g,l)=>g==null?null:`${g>=0?'up':'down'} ${Math.abs(g)}% on ${l}`;
+ const mt=P.ms.map(x=>[x,tv(x)]).sort((a,b)=>b[1]-a[1])[0],part=P.year&&P.ms.length<P.n,live=P.ms.includes(ALLM[ALLM.length-1]);
+ $('#hLab').textContent=P.year?'Full-year view':'Monthly snapshot';
+ $('#hHead').textContent=`${fmt(T)} ${SEGS[SEG].noun} sold in ${P.label}${part&&live?' so far':''}`;
+ const trend=P.year?dir(gy,'the same months of the previous year'):[dir(gy,mlabel(k.yoy,1)),dir(gm,mlabel(k.mom,1))].filter(Boolean).join(' and ');
+ $('#hSub').textContent=(part?`Covers ${P.ms.length} of ${P.n} months. `:'')+(trend?`The market is ${trend}. `:'')+`${bl[0][0]} leads with ${(bl[0][1]/T*100).toFixed(1)}% share, and ${top[0].model} is the best-selling model.`+(P.year?` Best month: ${mlabel(mt[0],1)} (${fmt(mt[1])}).`:'');
+ const row=(r,i,right)=>`<div data-v="${r.id}" class="hv flex items-center gap-3 rounded-lg px-2 py-2 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50">${i!=null?`<span class="w-5 text-xs text-neutral-400 num">${i}</span>`:''}${right}</div>`;
+ const mv=r=>row(r,null,`<div class="flex-1 min-w-0 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs text-neutral-500 num">${fmt(r.c)}</span><span class="w-16 text-right">${pill(r.gy)}</span>`);
+ const tm=P.year?P.ms:ALLM,mx=top[0].c||1,t6=bl.slice(0,6),oth=bl.slice(6).reduce((a,b)=>a+b[1],0),segs=oth?[...t6,['Others',oth]]:t6;
+ const B={
+ kpi:()=>`<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">`+kcard('Industry sales',fmt(T),pill(gy)+(P.year?' vs same months last year':' vs last year'))+kcard('Top brand',esc(bl[0][0]),`${fmt(bl[0][1])} units · ${(bl[0][1]/T*100).toFixed(1)}%`)+kcard('Best seller',esc(top[0].model),`${fmt(top[0].c)} units · ${esc(top[0].mfg)}`)+kcard('Fastest grower',elig[0]?esc(elig[0].model):'–',elig[0]?pill(elig[0].gy)+' YoY':'')+'</div>',
+ fy:()=>{const lm=ALLM[ALLM.length-1],F=+lm.slice(0,4)+(+lm.slice(5)>=4?1:0),fm=Y=>ALLM.filter(x=>x>=(Y-1)+'-04'&&x<=Y+'-03'),cm=fm(F),pv=fm(F-1),tt=ms=>ms.reduce((a,x)=>a+tv(x),0),ix=x=>{const o=+x.slice(5);return o>=4?o-4:o+8};
+  let a=0,b=0;cm.forEach(x=>DATA.vehicles.forEach(v=>{const p1=val(v.id,x),p2=val(v.id,prevY(x));if(p1!=null&&p2!=null){a+=p1;b+=p2}}));
+  const qs=ms=>[0,1,2,3].map(q=>{const z=ms.filter(x=>Math.floor(ix(x)/3)===q);return z.length?tt(z):null}),qa=qs(pv),qb=qs(cm),qx=Math.max(...qa.concat(qb).filter(v=>v!=null),1),fl=n=>'FY'+String(n).slice(2);
+  const bar=(v,c)=>v==null?'<div class="w-5"></div>':`<div class="w-5 rounded-t ${c}" style="height:${(v/qx*100).toFixed(1)}%" title="${fmt(v)}"></div>`;
+  return`<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">`+kcard(fl(F)+' so far',fmt(tt(cm)),cm.length+' of 12 months')+kcard('vs same months last FY',pill(growth(a,b||null)),'like-for-like')+kcard('Monthly average',fmt(Math.round(tt(cm)/cm.length)),'units / month')+kcard(fl(F-1)+(pv.length===12?' full year':' so far'),fmt(tt(pv)),pv.length+' months')+`</div>
+  <div class="mt-4"><div class="flex items-end justify-center gap-6 h-28">${[0,1,2,3].map(q=>`<div class="flex flex-col items-center gap-1 h-full justify-end"><div class="flex items-end gap-1 flex-1">${bar(qa[q],'bg-neutral-300 dark:bg-neutral-700')}${bar(qb[q],'bg-neutral-900 dark:bg-white')}</div><span class="text-xs text-neutral-500">Q${q+1}</span></div>`).join('')}</div>
+  <div class="flex justify-center gap-5 text-xs text-neutral-500 mt-2"><span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-neutral-300 dark:bg-neutral-700"></span>${fl(F-1)}</span><span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-neutral-900 dark:bg-white"></span>${fl(F)}</span></div></div>`},
+ top:()=>top.slice(0,10).map((r,i)=>row(r,i+1,`<div class="flex-1 min-w-0"><div class="flex justify-between text-sm"><span class="font-medium truncate">${esc(r.model)} <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></span><span class="num font-semibold">${fmt(r.c)}</span></div><div class="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 mt-1.5"><div class="h-1.5 rounded-full bg-neutral-900 dark:bg-white" style="width:${(r.c/mx*100).toFixed(1)}%"></div></div></div>${spark(r.id)}<span class="w-16 text-right">${pill(r.gy)}</span>`)).join(''),
+ brand:()=>{let acc=0;const rr=42,C=2*Math.PI*rr;return`<div class="flex items-center gap-5"><svg viewBox="0 0 120 120" class="w-36 h-36 shrink-0 text-neutral-900 dark:text-white">${segs.map((s,i)=>{const f=s[1]/T,o=-acc*C;acc+=f;return`<circle cx="60" cy="60" r="${rr}" fill="none" stroke="${SHC[i]}" stroke-width="16" stroke-dasharray="${(f*C).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${o.toFixed(2)}" transform="rotate(-90 60 60)"><title>${esc(s[0])}</title></circle>`}).join('')}<text x="60" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">${(bl[0][1]/T*100).toFixed(0)}%</text></svg><div class="flex-1 space-y-2">${segs.map((s,i)=>`<div class="flex items-center justify-between text-sm"><span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:${SHC[i]}"></span>${esc(s[0])}</span><span class="num text-neutral-500">${(s[1]/T*100).toFixed(1)}%</span></div>`).join('')}</div></div>`},
+ shift:()=>{if(!TY)return none('No prior-year data for this period.');const a=bl.map(([n,v])=>({n,now:v/T*100,was:(brY[n]||0)/TY*100})).map(o=>({...o,d:o.now-o.was})).sort((x,y)=>y.d-x.d),mxd=Math.max(...a.map(o=>Math.abs(o.d)),.1);
+  return`<div class="space-y-2.5">${a.map(o=>`<div class="flex items-center gap-3 text-sm"><span class="w-28 truncate">${esc(o.n)}</span><div class="flex-1 relative h-2 rounded-full bg-neutral-100 dark:bg-neutral-800"><div class="absolute top-0 bottom-0 w-px bg-neutral-400"  style="left:50%"></div><div class="absolute top-0 bottom-0 rounded-full ${o.d>=0?'bg-emerald-500':'bg-rose-500'}" style="${o.d>=0?'left:50%':'right:50%'};width:${(Math.abs(o.d)/mxd*50).toFixed(1)}%"></div></div><span class="w-28 text-right text-xs num ${o.d>=0?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'}">${o.d>=0?'+':''}${(Math.abs(o.d)<.05?0:o.d).toFixed(1)} pts <span class="text-neutral-400">${o.now.toFixed(1)}%</span></span></div>`).join('')}</div>`},
+ rank:()=>{const rk=(f,key)=>Object.fromEntries(R.filter(r=>r[key]>0).sort((a,b)=>b[key]-a[key]).map((r,i)=>[r.id,i+1])),RN=rk(0,'c'),RP=rk(0,'ya'),d=R.filter(r=>RN[r.id]&&RP[r.id]&&RN[r.id]!==RP[r.id]).map(r=>({...r,d:RP[r.id]-RN[r.id]})).sort((a,b)=>b.d-a.d),l=[...d.filter(x=>x.d>0).slice(0,4),...d.filter(x=>x.d<0).slice(-4).reverse()];
+  return l.length?l.map(r=>row(r,null,`<span class="w-12 text-sm font-bold num ${r.d>0?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'}">${r.d>0?'▲':'▼'} ${Math.abs(r.d)}</span><div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs text-neutral-500 num">#${RP[r.id]} → #${RN[r.id]}</span>`)).join(''):none('No rank changes.')},
+ up:()=>elig.slice(0,5).map(mv).join('')||none('Not enough data.'),
+ down:()=>[...elig].reverse().filter(r=>r.gy<0).slice(0,5).map(mv).join('')||none('No decliners.'),
+ new:()=>{if(!TY)return none('No prior-year data for this period.');const n=R.filter(r=>r.c>0&&!(r.ya>0)),d=R.filter(r=>r.c===0&&r.ya>0),tag=(t,c)=>`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${c}">${t}</span>`;
+  return n.length+d.length?[...n.map(r=>row(r,null,`${tag('New','bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400')}<div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${esc(r.mfg)}</span></div><span class="text-xs num text-neutral-500">${fmt(r.c)} units</span>`)),...d.map(r=>row(r,null,`${tag('Stopped','bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400')}<div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span></div><span class="text-xs num text-neutral-500">was ${fmt(r.ya)}</span>`))].join(''):none('No launches or discontinued models in this period.')},
+ rec:()=>{const it=ALLM.map(x=>[x,tv(x)]).sort((a,b)=>b[1]-a[1])[0],rc=R.map(r=>{const ms=ALLM.filter(x=>val(r.id,x)!=null);if(ms.length<3)return null;const bm=ms.reduce((b,x)=>val(r.id,x)>val(r.id,b)?x:b);return{...r,bm,bv:val(r.id,bm)}}).filter(r=>r&&P.ms.includes(r.bm)).sort((a,b)=>b.bv-a.bv).slice(0,5);
+  return`<div class="rounded-lg bg-neutral-50 dark:bg-neutral-800/50 px-3 py-2.5 mb-2 text-sm flex justify-between"><span>Industry best month</span><span class="font-semibold num">${mlabel(it[0],1)} · ${fmt(it[1])}${P.ms.includes(it[0])?' <span class="text-emerald-600">✓ in view</span>':''}</span></div>`+(rc.length?rc.map(r=>row(r,null,`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">Record</span><div class="flex-1 text-sm"><span class="font-medium">${esc(r.model)}</span> <span class="text-xs text-neutral-400">${mlabel(r.bm)}</span></div><span class="text-xs num font-semibold">${fmt(r.bv)}</span>`)).join(''):none('No model set a record in this period.'))},
+ trend:()=>lineSVG(tm.map(x=>mlabel(x)),[{name:'All models',vals:tm.map(tv),color:COL[0]}],kfmt),
+ stack:()=>{const tb={};tm.forEach(x=>DATA.vehicles.forEach(v=>tb[v.mfg]=(tb[v.mfg]||0)+(val(v.id,x)||0)));const bs=Object.entries(tb).sort((a,b)=>b[1]-a[1]).map(e=>e[0]),t5=bs.slice(0,5),ser=t5.map((b,i)=>({name:b,color:SHC[i],vals:tm.map(x=>DATA.vehicles.filter(v=>v.mfg===b).reduce((a,v)=>a+(val(v.id,x)||0),0))}));
+  ser.push({name:'Others',color:SHC[6],vals:tm.map(x=>DATA.vehicles.filter(v=>!t5.includes(v.mfg)).reduce((a,v)=>a+(val(v.id,x)||0),0))});return stackSVG(tm.map(x=>mlabel(x)),ser)},
+ heat:()=>{const all=ALLM.map(tv),hx=Math.max(...all),hn=Math.min(...all),ys=[...new Set(ALLM.map(x=>x.slice(0,4)))];
+  return`<div class="overflow-x-auto"><table class="w-full text-xs text-center"><thead class="text-neutral-500"><tr><th class="px-2 py-1 text-left">Year</th>${MN.map(n=>`<th class="px-1 py-1">${n}</th>`).join('')}</tr></thead><tbody>${ys.map(y=>`<tr><td class="px-2 py-1 text-left font-semibold">${y}</td>${MN.map((_,i)=>{const x=y+'-'+String(i+1).padStart(2,'0');if(!(x in DATA.sales))return'<td class="p-1"><div class="rounded h-9"></div></td>';const v=tv(x);return`<td class="p-1"><div class="rounded h-9 flex items-center justify-center num text-neutral-900 dark:text-white" style="background:rgba(37,99,235,${(.08+.5*(v-hn)/(hx-hn||1)).toFixed(2)})" title="${mlabel(x,1)}: ${fmt(v)}">${kfmt(v)}</div></td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}};
+ $('#hSec').innerHTML=HS.order.filter(id=>!HS.hidden[id]).map(id=>{const s=SECS.find(z=>z.id===id),inner=B[id]();return s.bare?`<div class="lg:col-span-2">${inner}</div>`:`<section class="card p-5 ${s.w===2?'lg:col-span-2':''}"><h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">${s.t}${s.sub?` <span class="normal-case font-normal">${s.sub}</span>`:''}</h2>${inner}</section>`}).join('')||'<p class="lg:col-span-2 text-center text-sm text-neutral-500 py-10">All sections are hidden. Use Customize to bring some back.</p>';
+ $$('#home .hv').forEach(d=>d.onclick=()=>openVehicle(d.dataset.v));
+}
+function renderCust(){
+ $('#cList').innerHTML=HS.order.map((id,i)=>{const s=SECS.find(z=>z.id===id);return`<div class="flex items-center gap-3 py-2.5"><input type="checkbox" data-id="${id}" ${HS.hidden[id]?'':'checked'} class="w-4 h-4"><span class="flex-1 text-sm">${s.t}</span><button data-mv="${i}:-1" class="b2 !px-2 !py-0.5">↑</button><button data-mv="${i}:1" class="b2 !px-2 !py-0.5">↓</button></div>`}).join('');
+ $$('#cList [data-id]').forEach(c=>c.onchange=()=>{HS.hidden[c.dataset.id]=!c.checked;saveHS();renderHome()});
+ $$('#cList [data-mv]').forEach(b=>b.onclick=()=>{const[i,d]=b.dataset.mv.split(':').map(Number),j=i+d;if(j<0||j>=HS.order.length)return;[HS.order[i],HS.order[j]]=[HS.order[j],HS.order[i]];saveHS();renderCust();renderHome()})}
+$('#hCust').onclick=()=>{renderCust();$('#cPanel').classList.remove('hidden')};
+$('#cClose').onclick=$('#cBg').onclick=()=>$('#cPanel').classList.add('hidden');
+$$('.pre').forEach(b=>b.onclick=()=>{const p=b.dataset.pre;HS.hidden={};if(p!=='compact'){if(p==='reset')HS.order=SECS.map(s=>s.id)}else SECS.forEach(s=>{if(!['kpi','top'].includes(s.id))HS.hidden[s.id]=true});saveHS();renderCust();renderHome()});
+$('#hSearch').onchange=e=>{const v=DATA.vehicles.find(x=>(x.mfg+' '+x.model).toLowerCase()===e.target.value.toLowerCase().trim()||x.model.toLowerCase()===e.target.value.toLowerCase().trim());if(v){e.target.value='';openVehicle(v.id)}};
+$('#hGoCmp').onclick=()=>{show('compare');renderCompare()};$('#hGoTbl').onclick=()=>show('dash');
+$('#brand').onclick=()=>show('home');
+
+function refreshViews(){
+ VMAP=Object.fromEntries(DATA.vehicles.map(v=>[v.id,v]));ALLM=Object.keys(DATA.sales).sort();buildMonthSelect();pkSync();
+ $('#upd').textContent=DATA.lastUpdated||'–';
+ $('#hList').innerHTML=DATA.vehicles.map(v=>`<option value="${esc(v.mfg)} ${esc(v.model)}">`).join('');
+ const o=ALLM.map(m=>`<option value="${m}">${mlabel(m,1)}</option>`).join('');$('#cFrom').innerHTML=o;$('#cTo').innerHTML=o;
+ if(!ALLM.includes(C.from))C.from=ALLM[0]||'';if(!ALLM.includes(C.to))C.to=ALLM[ALLM.length-1]||'';$('#cFrom').value=C.from;$('#cTo').value=C.to;
+ C.items=C.items.filter(i=>i.startsWith('b:')?DATA.vehicles.some(v=>'b:'+v.mfg===i):VMAP[i]);
+ if(!C.items.length&&ALLM.length){const l=ALLM[ALLM.length-1];C.items=[...DATA.vehicles].sort((a,b)=>(val(b.id,l)||0)-(val(a.id,l)||0)).slice(0,3).map(v=>v.id)}
+ show(cur,1);render();renderHome();renderCompare();if(cur==='vehicle')renderVehicle()}
+window.onDataChanged=refreshViews;
+const CMEM={};
+function normData(j){if(!j||typeof j!=='object'||!Array.isArray(j.vehicles)||!j.sales||typeof j.sales!=='object')throw Error('not a valid data file');const vs=j.vehicles.filter(v=>v&&v.id&&v.mfg&&v.model),ok=new Set(vs.map(v=>v.id)),sales={};Object.keys(j.sales).filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().forEach(m=>{const o={};Object.entries(j.sales[m]||{}).forEach(([id,u])=>{if(ok.has(id)&&Number.isFinite(+u))o[id]=+u});if(Object.keys(o).length)sales[m]=o});return{schemaVersion:1,lastUpdated:j.lastUpdated||'–',unit:j.unit||'units',vehicles:vs,sales}}
+async function loadData(){const f=SEGS[SEG].file,sg=SEG;
+ try{const r=await fetch(f,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=normData(await r.json());if(sg!==SEG)return;DATA=j;refreshViews()}
+ catch(e){if(sg!==SEG)return;$('#emptyMsg').textContent='Could not load '+f+' ('+(e.message||e)+'). Please try again later.';refreshViews()}}
+function segUI(){document.querySelectorAll('[data-seg]').forEach(b=>{const on=b.dataset.seg===SEG;b.className='px-3.5 py-1 rounded-lg text-sm font-semibold transition '+(on?'bg-white text-neutral-900 shadow-sm dark:bg-neutral-700 dark:text-white':'text-neutral-500 hover:text-neutral-900 dark:hover:text-white')})}
+function switchSeg(t){if(t===SEG||!Object.hasOwn(SEGS,t))return;
+ CMEM[SEG]={items:C.items,group:C.group,fy:C.fy};SEG=t;history.replaceState(null,'','#'+t);segUI();loadHS();
+ Object.assign(C,{items:[],from:'',to:''},CMEM[t]||{});curV=null;VC.year=null;VC.mode='monthly';if(cur==='vehicle')cur='home';
+ DATA={schemaVersion:1,lastUpdated:'–',vehicles:[],sales:{}};$('#emptyMsg').textContent='Loading '+SEGS[t].label.toLowerCase()+'…';refreshViews();loadData()}
+$('#segBar').onclick=e=>{const b=e.target.closest('[data-seg]');if(b)switchSeg(b.dataset.seg)};
+window.addEventListener('hashchange',()=>switchSeg(location.hash.slice(1)));
+
+// ---- Home period picker ----
+const PK={tab:'m',yr:''},pkT=v=>v.includes(':')?v.split(':')[0]:'m',pkOpts=t=>[...$('#month').options].map(o=>o.value).filter(v=>pkT(v)===t).sort(),
+pkLab=v=>{const t=pkT(v);return t==='m'?mlabel(v,1):t==='cy'?'Calendar '+v.slice(3):'FY'+v.slice(3)+' · Apr–Mar'};
+function pkSync(){const v=$('#month').value;if(!v){$('#pkBtn').textContent='No data';return}const l=pkOpts(pkT(v)),i=l.indexOf(v);$('#pkBtn').textContent=pkLab(v)+' ▾';$('#pkPrev').disabled=i<=0;$('#pkNext').disabled=i>=l.length-1}
+function pkSet(v){const s=$('#month');s.value=v;s.dispatchEvent(new Event('change'));pkSync();pkRender()}
+function pkStep(d){const v=$('#month').value,l=pkOpts(pkT(v)),n=l[l.indexOf(v)+d];if(n)pkSet(n)}
+function pkRender(){const P=$('#pkPanel');if(P.classList.contains('hidden'))return;const v=$('#month').value,on='bg-neutral-900 text-white dark:bg-white dark:text-neutral-900',off='hover:bg-neutral-100 dark:hover:bg-neutral-800',
+ tabs=[['m','Month'],['cy','Calendar year'],['fy','Financial year']].map(([k,l])=>`<button data-pt="${k}" class="flex-1 px-2 py-1.5 rounded-md text-xs font-semibold ${PK.tab===k?on:off}">${l}</button>`).join('');let body='';
+ if(PK.tab==='m'){const ys=[...new Set(ALLM.map(m=>m.slice(0,4)))];
+  body=`<div class="flex gap-1 overflow-x-auto pb-2">${ys.map(y=>`<button data-py="${y}" class="px-3 py-1 rounded-full text-xs font-semibold border border-neutral-200 dark:border-neutral-700 ${PK.yr===y?on:off}">${y}</button>`).join('')}</div><div class="grid grid-cols-4 gap-1.5">${MN.map((n,i)=>{const k=PK.yr+'-'+String(i+1).padStart(2,'0'),has=ALLM.includes(k);return`<button ${has?`data-pm="${k}"`:'disabled'} class="py-2 rounded-lg text-sm ${k===v?on+' font-semibold':has?off:'text-neutral-300 dark:text-neutral-700 cursor-not-allowed'}">${n}</button>`}).join('')}</div>`}
+ else body=`<div class="grid grid-cols-3 gap-1.5">${pkOpts(PK.tab).reverse().map(o=>{const y=o.slice(3),n=PK.tab==='cy'?ALLM.filter(m=>m.startsWith(y)).length:ALLM.filter(m=>m>=(1999+ +y)+'-04'&&m<=(2000+ +y)+'-03').length;return`<button data-pm="${o}" class="py-2 rounded-lg text-sm ${o===v?on+' font-semibold':off}">${PK.tab==='cy'?y:'FY'+y}<span class="block text-[10px] opacity-60">${n} of 12 months</span></button>`}).join('')}</div>`;
+ P.innerHTML=`<div class="flex gap-1 p-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 mb-3">${tabs}</div>${body}<p class="text-[11px] text-neutral-400 mt-3">Tip: ← → keys step through ${PK.tab==='m'?'months':'years'}</p>`}
+$('#pkBtn').onclick=e=>{e.stopPropagation();const P=$('#pkPanel'),v=$('#month').value;if(!v)return;if(P.classList.contains('hidden')){PK.tab=pkT(v);PK.yr=v.includes(':')?(ALLM[ALLM.length-1]||'').slice(0,4):v.slice(0,4);P.classList.remove('hidden');pkRender()}else P.classList.add('hidden')};
+$('#pkPrev').onclick=()=>pkStep(-1);$('#pkNext').onclick=()=>pkStep(1);
+$('#pkPanel').onclick=e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;if(b.dataset.pt){PK.tab=b.dataset.pt;pkRender()}else if(b.dataset.py){PK.yr=b.dataset.py;pkRender()}else if(b.dataset.pm){pkSet(b.dataset.pm);$('#pkPanel').classList.add('hidden')}};
+document.addEventListener('click',()=>$('#pkPanel').classList.add('hidden'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#pkPanel').classList.add('hidden');if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&(cur==='home'||cur==='dash')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)&&$('#cPanel').classList.contains('hidden'))pkStep(e.key==='ArrowLeft'?-1:1)});
+
+// ---- Vehicle page: By year accordion + linked chart ----
+const VC={mode:'monthly',year:null},vYears=ms=>[...new Set(ms.map(m=>m.slice(0,4)))];
+function yearAcc(v,ms){const ys=vYears(ms).reverse();if(!ys.includes(VC.year))VC.year=ys[0];
+ $('#vTable').innerHTML='<div class="space-y-2">'+ys.map(y=>{const mm=ms.filter(m=>m.startsWith(y)),tot=mm.reduce((a,m)=>a+val(curV,m),0),o=y===VC.year;let c=0,p=0;mm.forEach(m=>{const q=val(curV,prevY(m));if(q!=null){c+=val(curV,m);p+=q}});
+  const mx=Math.max(...mm.map(m=>val(curV,m)));
+  const rows=MN.map((n,i)=>{const k=y+'-'+String(i+1).padStart(2,'0'),x=val(curV,k),pk2=prevKeys(k);if(x==null)return`<tr class="text-neutral-400"><td class="px-4 py-2.5">${n}</td><td class="px-4 py-2.5 text-right">–</td><td class="px-4 py-2.5 text-right">–</td><td class="px-4 py-2.5 text-right">–</td><td></td></tr>`;
+   return`<tr><td class="px-4 py-2.5 font-medium">${n}</td><td class="px-4 py-2.5 text-right num font-semibold">${fmt(x)}</td><td class="px-4 py-2.5 text-right">${pill(growth(x,val(curV,pk2.mom)))}</td><td class="px-4 py-2.5 text-right">${pill(growth(x,val(curV,pk2.yoy)))}</td><td class="px-4 py-2.5 w-32 hidden sm:table-cell"><div class="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800"><div class="h-1.5 rounded-full bg-neutral-900 dark:bg-white" style="width:${(x/mx*100).toFixed(0)}%"></div></div></td></tr>`}).join('');
+  return`<div class="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden"><button data-vy="${y}" class="w-full px-4 py-3 flex items-center justify-between gap-3 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/40"><span class="font-semibold"><span class="inline-block w-5 text-neutral-400">${o?'▾':'▸'}</span>${y}</span><span class="text-xs text-neutral-500 flex items-center gap-2">${fmt(tot)} units · ${mm.length}/12 months ${pill(growth(c,p||null))}</span></button>
+  ${o?`<div class="border-t border-neutral-200 dark:border-neutral-800"><table class="w-full text-sm"><thead class="text-xs uppercase tracking-wider text-neutral-500 bg-neutral-50 dark:bg-neutral-950/60"><tr><th class="text-left px-4 py-2.5">Month</th><th class="text-right px-4 py-2.5">Units</th><th class="text-right px-4 py-2.5">MoM</th><th class="text-right px-4 py-2.5">YoY</th><th class="hidden sm:table-cell"></th></tr></thead><tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">${rows}<tr class="font-semibold bg-neutral-50 dark:bg-neutral-950/50"><td class="px-4 py-2.5">Total</td><td class="px-4 py-2.5 text-right num">${fmt(tot)}</td><td></td><td class="px-4 py-2.5 text-right">${pill(growth(c,p||null))}</td><td class="hidden sm:table-cell"></td></tr></tbody></table></div>`:''}</div>`}).join('')+'</div>'}
+function vChartDraw(v,ms,vals){const ys=vYears(ms);if(!ys.includes(VC.year))VC.year=ys[ys.length-1];
+ $('#vCMode').innerHTML=[['monthly','Monthly'],['yearly','Yearly'],['year','Year: '+VC.year]].map(([k,l])=>`<button data-cm="${k}" class="b2 ${VC.mode===k?'!bg-neutral-900 !text-white dark:!bg-white dark:!text-neutral-900':''}">${l}</button>`).join('');
+ const f=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':Math.round(n),yt=y=>ms.filter(m=>m.startsWith(y)).reduce((a,m)=>a+val(curV,m),0);
+ if(VC.mode==='yearly')$('#vChart').innerHTML=stackSVG(ys.map(y=>ms.filter(m=>m.startsWith(y)).length<12?y+'*':y),[{name:v.model+' · units per year',color:'#525252',vals:ys.map(yt)}])+'<p class="text-xs text-neutral-500 mt-1">* partial year</p>';
+ else if(VC.mode==='year'){const y=VC.year,py=String(y-1),g=Y=>MN.map((_,i)=>val(curV,Y+'-'+String(i+1).padStart(2,'0')));
+  const ser=[];if(ys.includes(py))ser.push({name:py,vals:g(py),color:'#a3a3a3',dash:1});ser.push({name:y,vals:g(y),color:'#2563eb'});$('#vChart').innerHTML=lineSVG(MN,ser,f)}
+ else $('#vChart').innerHTML=lineSVG(ms.map(m=>mlabel(m)),[{name:v.model,vals,color:COL[0]}],f)}
+$('#vTable').addEventListener('click',e=>{const b=e.target.closest('[data-vy]');if(!b)return;VC.year=b.dataset.vy;VC.mode='year';renderVehicle()});
+$('#vCMode').addEventListener('click',e=>{const b=e.target.closest('[data-cm]');if(!b)return;VC.mode=b.dataset.cm;renderVehicle()});
+initCompare();show('home');segUI();loadData();
+</script>
+</body>
+</html>
